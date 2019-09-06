@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 class ArchiveWarning < Tag
   DEFAULTS = [
-    "No Archive Warnings Apply",
-    "Rape/Non-Con",
-    "Graphic Depictions Of Violence",
-    "Major Character Death",
-    "Underage",
-    "Choose Not To Use Archive Warnings"
-  ]
+    'No Archive Warnings Apply',
+    'Rape/Non-Con',
+    'Graphic Depictions Of Violence',
+    'Major Character Death',
+    'Underage',
+    'Choose Not To Use Archive Warnings'
+  ].freeze
 
   ### VALIDATIONS
 

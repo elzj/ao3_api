@@ -1,20 +1,24 @@
+# frozen_string_literal: true
+
 class Tag < ApplicationRecord
-  TAGGABLE_TYPES = %w(Rating Warning Category Character Relationship Freeform).freeze
+  TAGGABLE_TYPES = %w[
+    Rating Warning Category Character Relationship Freeform
+  ].freeze
 
   ### ASSOCIATIONS
   has_many :taggings, foreign_key: :tagger_id
 
   ### VALIDATIONS
   validates :name,
-    presence: true,
-    uniqueness: { case_sensitive: false },
-    length: {
-      minimum: ArchiveConfig.tags[:name_min],
-      maximum: ArchiveConfig.tags[:name_max]
-    }
+            presence: true,
+            uniqueness: { case_sensitive: false },
+            length: {
+              minimum: ArchiveConfig.tags[:name_min],
+              maximum: ArchiveConfig.tags[:name_max]
+            }
 
   validates :type,
-    inclusion: { in: TAGGABLE_TYPES }
+            inclusion: { in: TAGGABLE_TYPES }
 
   ### CALLBACKS
 
@@ -22,7 +26,7 @@ class Tag < ApplicationRecord
 
   # Workaround for warning class with existing data
   def self.find_sti_class(type_name)
-    if type_name == "Warning"
+    if type_name == 'Warning'
       ArchiveWarning
     else
       super
@@ -30,5 +34,4 @@ class Tag < ApplicationRecord
   end
 
   ### INSTANCE METHODS
-
 end
