@@ -141,7 +141,7 @@ ActiveRecord::Schema.define(version: 2019_08_26_232306) do
     t.datetime "updated_at"
     t.datetime "created_at"
     t.integer "position", default: 1
-    t.string "slug", null: false
+    t.string "slug", default: "", null: false
     t.index ["position"], name: "index_archive_faqs_on_position"
     t.index ["slug"], name: "index_archive_faqs_on_slug", unique: true
   end
@@ -335,8 +335,8 @@ ActiveRecord::Schema.define(version: 2019_08_26_232306) do
     t.integer "icon_file_size"
     t.datetime "icon_updated_at"
     t.integer "description_sanitizer_version", limit: 2, default: 0, null: false
-    t.string "icon_alt_text"
-    t.string "icon_comment_text"
+    t.string "icon_alt_text", default: ""
+    t.string "icon_comment_text", default: ""
     t.index ["name"], name: "index_collections_on_name"
     t.index ["parent_id"], name: "index_collections_on_parent_id"
   end
@@ -587,7 +587,7 @@ ActiveRecord::Schema.define(version: 2019_08_26_232306) do
     t.integer "position"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "simplified_email", null: false
+    t.string "simplified_email", default: "", null: false
     t.string "ip_address"
     t.index ["email"], name: "index_invite_requests_on_email"
     t.index ["simplified_email"], name: "index_invite_requests_on_simplified_email", unique: true
@@ -619,7 +619,7 @@ ActiveRecord::Schema.define(version: 2019_08_26_232306) do
     t.string "name"
     t.boolean "support_available", default: false, null: false
     t.boolean "abuse_support_available", default: false, null: false
-    t.string "sortable_name", null: false
+    t.string "sortable_name", default: "", null: false
     t.index ["short"], name: "index_languages_on_short"
     t.index ["sortable_name"], name: "index_languages_on_sortable_name"
   end
@@ -904,10 +904,10 @@ ActiveRecord::Schema.define(version: 2019_08_26_232306) do
     t.string "icon_content_type"
     t.integer "icon_file_size"
     t.datetime "icon_updated_at"
-    t.string "icon_alt_text"
+    t.string "icon_alt_text", default: ""
     t.boolean "delta", default: true
     t.integer "description_sanitizer_version", limit: 2, default: 0, null: false
-    t.string "icon_comment_text"
+    t.string "icon_comment_text", default: ""
     t.index ["name"], name: "index_psueds_on_name"
     t.index ["user_id", "name"], name: "index_pseuds_on_user_id_and_name"
   end
@@ -1053,7 +1053,7 @@ ActiveRecord::Schema.define(version: 2019_08_26_232306) do
     t.string "icon_content_type"
     t.integer "icon_file_size"
     t.datetime "icon_updated_at"
-    t.string "icon_alt_text"
+    t.string "icon_alt_text", default: ""
     t.integer "margin"
     t.integer "paragraph_gap"
     t.string "font"
@@ -1158,16 +1158,16 @@ ActiveRecord::Schema.define(version: 2019_08_26_232306) do
   create_table "taggings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "tagger_id"
     t.integer "taggable_id", null: false
-    t.string "taggable_type", limit: 100
+    t.string "taggable_type", limit: 100, default: ""
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "tagger_type", limit: 100
+    t.string "tagger_type", limit: 100, default: ""
     t.index ["taggable_id", "taggable_type"], name: "index_taggings_taggable"
     t.index ["tagger_id", "tagger_type", "taggable_id", "taggable_type"], name: "index_taggings_polymorphic", unique: true
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", limit: 100
+    t.string "name", limit: 100, default: ""
     t.boolean "canonical", default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1179,7 +1179,7 @@ ActiveRecord::Schema.define(version: 2019_08_26_232306) do
     t.integer "last_wrangler_id"
     t.string "last_wrangler_type"
     t.boolean "unwrangleable", default: false, null: false
-    t.string "sortable_name", null: false
+    t.string "sortable_name", default: "", null: false
     t.index ["canonical"], name: "index_tags_on_canonical"
     t.index ["created_at"], name: "tag_created_at_index"
     t.index ["id", "type"], name: "index_tags_on_id_and_type"
