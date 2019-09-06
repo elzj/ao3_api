@@ -58,3 +58,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 group :development, :test do
   gem 'rspec-rails', '~> 3.8'
 end
+
+group :test do
+  gem 'faker'
+  gem 'factory_bot_rails'
+  gem 'shoulda-matchers'
+  gem 'shoulda-callback-matchers'
+end
