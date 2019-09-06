@@ -1,0 +1,35 @@
+development: &default
+  chapters:
+    content_min: 10
+    content_max: 510000
+  elasticsearch:
+    url: 'http://127.0.0.1:9200'
+    prefix: 'ao3'
+    work_shards: 12
+  host: 'localhost:3000'
+  locales:
+    default_id: 1
+  profiles:
+    title_max: 255
+    location_max: 255
+    about_me_max: 2000
+  pseuds:
+    name_min: 1
+    name_max: 40
+    description_max: 500
+  tags:
+    name_min: 1
+    name_max: 100
+  users:
+    login_min: 3
+    login_max: 40
+    password_min: 6
+    password_max: 40
+  works:
+    title_min: 1
+    title_max: 255
+    summary_max: 1250
+    notes_max: 5000
+
+test:
+  <<: *default

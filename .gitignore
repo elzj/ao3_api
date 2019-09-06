@@ -23,6 +23,7 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /config/initializers/secret_token.rb
+/config/local.yml
 
 /public/packs
 /public/packs-test
