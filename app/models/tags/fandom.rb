@@ -1,0 +1,2 @@
+class Fandom < Tag
+end

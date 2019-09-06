@@ -1,0 +1,2 @@
+class Freeform < Tag
+end

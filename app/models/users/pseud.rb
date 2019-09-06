@@ -1,0 +1,2 @@
+class Pseud < ApplicationRecord
+end

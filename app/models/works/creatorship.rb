@@ -1,0 +1,2 @@
+class Creatorship < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+class Relationship < Tag
+end
