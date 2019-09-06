@@ -20,5 +20,15 @@ class Tag < ApplicationRecord
 
   ### CLASS METHODS
 
+  # Workaround for warning class with existing data
+  def self.find_sti_class(type_name)
+    if type_name == "Warning"
+      ArchiveWarning
+    else
+      super
+    end
+  end
+
   ### INSTANCE METHODS
+
 end

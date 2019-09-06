@@ -5,5 +5,6 @@ class Rating < Tag
     "Mature",
     "Explicit",
     "Not Rated"
-  ]  
+  ]
+  validates :name, inclusion: { in: DEFAULTS }
 end
