@@ -65,3 +65,5 @@ group :test do
   gem 'shoulda-matchers'
   gem 'shoulda-callback-matchers'
 end
+
+gem 'devise'
