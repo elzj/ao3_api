@@ -64,6 +64,8 @@ group :test do
   gem 'factory_bot_rails'
   gem 'shoulda-matchers'
   gem 'shoulda-callback-matchers'
+  gem 'simplecov', require: false
 end
 
 gem 'devise'
+gem 'elasticsearch', '>=6.0.0'

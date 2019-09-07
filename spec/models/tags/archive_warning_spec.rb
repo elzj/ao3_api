@@ -5,6 +5,8 @@ RSpec.describe ArchiveWarning, type: :model do
 
   describe ".sti_name" do
     it "maps class to legacy Warning type" do
+      expect(ArchiveWarning.sti_name).to eq("Warning")
+      
       tag = Tag.new(type: "Warning")
       expect(tag).to be_a(ArchiveWarning)
 

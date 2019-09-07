@@ -2,8 +2,9 @@
 
 class Tag < ApplicationRecord
   TAGGABLE_TYPES = %w[
-    Rating Warning Category Character Relationship Freeform
+    Rating Warning Category Fandom Character Relationship Freeform
   ].freeze
+  ALL_TYPES = TAGGABLE_TYPES + ['Media']
 
   ### ASSOCIATIONS
   has_many :taggings, foreign_key: :tagger_id
@@ -18,7 +19,7 @@ class Tag < ApplicationRecord
             }
 
   validates :type,
-            inclusion: { in: TAGGABLE_TYPES }
+            inclusion: { in: ALL_TYPES }
 
   ### CALLBACKS
 

@@ -1,17 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Profile, type: :model do
-  describe '#location' do
-    it { should validate_length_of(:location).is_at_most(255) }
-  end
-
-  describe '#title' do
-    it { should validate_length_of(:title).is_at_most(255) }
-  end
-
-  describe '#about_me' do
-    it { should validate_length_of(:about_me).is_at_most(2000) }
-  end
+  it { should validate_length_of(:about_me).is_at_most(2000) }
+  it { should validate_length_of(:location).is_at_most(255) }
+  it { should validate_length_of(:title).is_at_most(255) }
 
   describe '#date_of_birth' do
     it "should not be less than 13 years ago" do
