@@ -2,10 +2,6 @@ development: &default
   chapters:
     content_min: 10
     content_max: 510000
-  elasticsearch:
-    url: 'http://127.0.0.1:9200'
-    prefix: 'ao3'
-    work_shards: 12
   host: 'localhost:3000'
   locales:
     default_id: 1
@@ -17,6 +13,11 @@ development: &default
     name_min: 1
     name_max: 40
     description_max: 500
+  search:
+    max_results: 100000
+    prefix: 'ao3api'
+    url: 'http://127.0.0.1:9200'
+    work_shards: 12
   tags:
     name_min: 1
     name_max: 100

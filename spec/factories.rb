@@ -21,4 +21,8 @@ FactoryBot.define do
     is_default { true }
     user
   end
+
+  factory :freeform do
+    name { Faker::Books::Lovecraft.word }
+  end
 end

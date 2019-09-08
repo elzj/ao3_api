@@ -8,6 +8,8 @@ class Tag < ApplicationRecord
 
   ### ASSOCIATIONS
   has_many :taggings, foreign_key: :tagger_id
+  has_many :works, through: :taggings, source: :taggable, source_type: 'Work'
+
 
   ### VALIDATIONS
   validates :name,
@@ -35,4 +37,7 @@ class Tag < ApplicationRecord
   end
 
   ### INSTANCE METHODS
+  def has_posted_works?
+    works.where(posted: true).exists?
+  end
 end
