@@ -22,6 +22,14 @@ FactoryBot.define do
     user
   end
 
+  factory :profile do
+    user
+  end
+
+  factory :preference do
+    user
+  end
+
   factory :freeform do
     name { Faker::Books::Lovecraft.word }
   end

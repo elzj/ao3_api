@@ -16,5 +16,7 @@ module Ao3Api
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
     config.autoload_paths += %w(search tags users works).map{ |dir| "#{Rails.root}/app/models/#{dir}" }
+
+    config.action_mailer.default_url_options = { host: '127.0.0.1' }
   end
 end
