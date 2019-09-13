@@ -68,5 +68,5 @@ group :test do
   gem 'simplecov', require: false
 end
 
-gem 'devise'
+gem 'devise', '>= 4.7.1'
 gem 'elasticsearch', '>=6.0.0'
