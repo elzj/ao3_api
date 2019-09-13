@@ -10,6 +10,14 @@
   </head>
 
   <body>
-    <%= yield %>
+    <div class="container">
+      <%= render 'layouts/header' %>
+
+      <% flash.each do |name, msg| -%>
+        <%= content_tag :div, msg, class: (name == 'notice' ? 'alert alert-primary' : 'alert alert-danger') %>
+      <% end -%>
+
+      <div id="main"><%= yield %></div>
+    </div>
   </body>
 </html>

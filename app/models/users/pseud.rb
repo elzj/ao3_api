@@ -38,7 +38,7 @@ class Pseud < ApplicationRecord
   end
 
   def self.create_default(user)
-    Pseud.create(user_id: user.id, name: user.login, is_default: true)
+    Pseud.create!(user_id: user.id, name: user.login, is_default: true)
   end
 
   ### INSTANCE METHODS

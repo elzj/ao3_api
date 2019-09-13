@@ -36,7 +36,7 @@ class Profile < ApplicationRecord
 
   ### CLASS METHODS
   def self.create_default(user)
-    create(user_id: user.id)
+    create!(user_id: user.id)
   end
 
   ### INSTANCE METHODS
