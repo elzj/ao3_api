@@ -40,7 +40,7 @@ RSpec.describe User, type: :model do
       expect(user.default_pseud).to eq(pseud)
     end
     it 'creates a default pseud if one does not' do
-      user = build_stubbed(:user)
+      user = create(:user)
       pseud = user.default_pseud
       expect(pseud).to respond_to(:name)
       expect(pseud.name).to eq(user.login)
@@ -63,7 +63,7 @@ RSpec.describe User, type: :model do
       expect(user.current_profile).to eq(profile)
     end
     it 'creates a profile if one does not' do
-      user = build_stubbed(:user)
+      user = create(:user)
       profile = user.current_profile
       expect(profile).to respond_to(:user_id)
       expect(profile.user_id).to eq(user.id)
@@ -77,7 +77,7 @@ RSpec.describe User, type: :model do
       expect(user.current_preferences).to eq(preference)
     end
     it 'creates preferences if they do not' do
-      user = build_stubbed(:user)
+      user = create(:user)
       pref = user.current_preferences
       expect(pref).to respond_to(:user_id)
       expect(pref.user_id).to eq(user.id)
