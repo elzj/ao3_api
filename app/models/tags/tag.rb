@@ -88,6 +88,27 @@ class Tag < ApplicationRecord
     end
   end
 
+  def self.with_direct_filtered_works
+    joins(:filtered_works).where(filter_taggings: { inherited: false })
+  end
+
+  def self.for_pseud_with_count(pseud, type: nil, unrestricted: nil)
+    select_list = "tags.id, tags.name, tags.type, COUNT('tags.id') AS work_count"
+    query = with_direct_filtered_works.
+              joins(filtered_works: :creatorships).
+              select(select_list).
+              where(
+                creatorships: { pseud_id: pseud.id, approved: true },
+                works: {
+                  in_anon_collection: false,
+                  in_unrevealed_collection: false
+                }
+              ).merge(Work.posted.unhidden)
+    query = query.where(type: type) if type
+    query = query.merge(Work.unrestricted) if unrestricted
+    query.group(:id)
+  end
+
   ### INSTANCE METHODS
 
   def squish_name

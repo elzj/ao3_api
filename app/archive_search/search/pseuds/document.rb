@@ -13,22 +13,21 @@ module Search
         @record = record
       end
 
-      def to_hash
+      def as_json
         record.as_json(
           root: false,
           only: WHITELISTED_ATTRIBUTES,
           methods: [
             :user_login,
-            :byline,
-            :collection_ids
+            :byline
           ]
         ).merge(
           sortable_name: record.name.downcase,
-          fandoms: fandoms,
-          general_bookmarks_count: general_bookmarks_count,
-          public_bookmarks_count: public_bookmarks_count,
-          general_works_count: general_works_count,
-          public_works_count: public_works_count
+          fandoms: fandoms
+          # general_bookmarks_count: general_bookmarks_count,
+          # public_bookmarks_count: public_bookmarks_count,
+          # general_works_count: general_works_count,
+          # public_works_count: public_works_count
         )
       end
 
@@ -49,22 +48,19 @@ module Search
       # Produces an array of hashes with the format
       # [{id: 1, name: "Star Trek", count: 5}]
       def tag_info(tag_type)
-        all_uses = record.direct_filters
-          .where(works: countable_works_conditions)
-          .by_type(tag_type)
-          .group_by(&:id)
-        
-        public_uses = record.direct_filters
-          .where(works: public_works_conditions)
-          .by_type(tag_type)
-          .group_by(&:id)
-
-        info = all_uses.map do |id, tags|
-          { id: id, name: tags.first.name, count: tags.length }
+        info = Tag.for_pseud_with_count(
+          record,
+          type: tag_type
+        ).map do |tag|
+          { id: tag.id, name: tag.name, count: tag.work_count }
         end
 
-        info += public_uses.map do |id, tags|
-          { id_for_public: id, name: tags.first.name, count: tags.length }
+        info += Tag.for_pseud_with_count(
+          record,
+          type: tag_type,
+          unrestricted: true
+        ).map do |tag|
+          { id_for_public: tag.id, name: tag.name, count: tag.work_count }
         end
 
         info

@@ -7,8 +7,8 @@ module Search
         'Tag'
       end
 
-      def indexer
-        Search::Tags::Indexer.new
+      def indexer_class
+        Indexer
       end
 
       def add_filters

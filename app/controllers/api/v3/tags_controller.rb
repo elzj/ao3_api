@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V3::TagsController < Api::V3::BaseController
   respond_to :json
 
@@ -16,5 +18,4 @@ class Api::V3::TagsController < Api::V3::BaseController
   def query_params
     params.require(:query).permit(:name, :canonical, :tag_type)
   end
-
 end

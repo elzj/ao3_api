@@ -41,6 +41,14 @@ class Work < ApplicationRecord
     where(posted: true)
   end
 
+  def self.unhidden
+    where(hidden_by_admin: false)
+  end
+
+  def self.unrestricted
+    where(restricted: false)
+  end
+
   ### INSTANCE METHODS ###
 
   # creates a language_short method

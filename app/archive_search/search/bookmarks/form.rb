@@ -3,8 +3,8 @@
 module Search
   module Bookmarks
     class Form < Search::Base::Form
-      def query
-        Query.new(options)
+      def query_class
+        Query
       end
     end
   end

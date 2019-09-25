@@ -51,15 +51,15 @@ module Search
 
       # Make a direct request to the elasticsearch count api
       def self.count_for_user(user)
-        Query.new(user_ids: [user.id]).count
+        query_class.new(user_ids: [user.id]).count
       end
 
       def self.count_for_pseuds(pseuds)
-        Query.new(pseud_ids: pseuds.map(&:id)).count
+        query_class.new(pseud_ids: pseuds.map(&:id)).count
       end
 
-      def query
-        Query.new(options)
+      def query_class
+        Query
       end
 
       def process_options

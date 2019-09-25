@@ -9,8 +9,8 @@ module Search
         define_method(filterable) { options[filterable] }
       end
 
-      def query
-        Query.new(options)
+      def query_class
+        Query
       end
 
       def process_options

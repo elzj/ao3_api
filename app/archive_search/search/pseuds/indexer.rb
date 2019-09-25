@@ -2,21 +2,18 @@
 
 module Search
   module Pseuds
+    # Indexer for the pseuds class
     class Indexer < Search::Base::Indexer
       def klass
         "Pseud"
       end
 
-      def load_file_json(filetype)
-        file = File.join(
-          File.dirname(__FILE__),
-          "#{filetype}.json"
-        )
-        JSON.parse(File.read(file))
+      def index_class
+        Index
       end
 
-      def document(object)
-        Search::Pseuds::Document.new(object).to_hash
+      def document_class
+        Document
       end
     end
   end

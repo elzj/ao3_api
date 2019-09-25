@@ -12,16 +12,16 @@ module Search
         @client = Search::Client.new_client
       end
 
-      def indexer
-        Indexer.new
+      def indexer_class
+        Indexer
+      end
+
+      def result_class
+        Result
       end
 
       def index_name
-        indexer.index_name
-      end
-
-      def document_type
-        indexer.document_type
+        indexer_class.new.index_name
       end
 
       # Add the appropriate options to the query
@@ -35,7 +35,6 @@ module Search
       def search
         client.search(
           index: index_name,
-          type: document_type,
           body: search_body
         )
       rescue Elasticsearch::Transport::Transport::Errors::BadRequest
@@ -44,7 +43,7 @@ module Search
 
       # Run a search and return the results in an appropriate format
       def search_results
-        Result.new(search)
+        result_class.new(search)
       end
 
       # Perform a count query based on the given options

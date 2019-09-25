@@ -5,9 +5,9 @@ require 'rails_helper'
 describe "Tags API", type: :request, tag_search: :true do
   describe "#index" do
     before(:each) do
-      Search::Tags::Indexer.new.prepare_for_testing
+      Search::Tags::Index.new.prepare_for_testing
       tag = create(:freeform, name: "fluff", canonical: false)
-      index_and_refresh(Search::Tags::Indexer, tag.reload)
+      index_and_refresh(Search::Tags::Indexer, [tag.reload])
     end
 
     it "returns accurate tag search results" do

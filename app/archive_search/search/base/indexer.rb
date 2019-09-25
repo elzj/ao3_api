@@ -2,6 +2,7 @@
 
 module Search
   module Base
+    # Indexes objects, individually or in batches
     class Indexer
       BATCH_SIZE = 1000
       attr_reader :client
@@ -10,83 +11,33 @@ module Search
         @client = client || Search::Client.new_client
       end
 
+      # Override in subclasses
       def klass
-        "generic"
+        "Example"
       end
 
-      # Originally added to allow IndexSweeper to find the Elasticsearch document
-      # ids when they do not match the associated ActiveRecord objects' ids.
-      #
-      # Override in subclasses if necessary.
-      def find_elasticsearch_ids(ids)
-        ids
+      def index_class
+        Index
       end
 
-      def delete_index
-        return unless client.indices.exists(index: index_name)
-        client.indices.delete(index: index_name)
+      def document_class
+        Document
       end
 
-      def refresh_index
-        client.indices.refresh(index: index_name)
+      def index_name
+        index_class.name
       end
 
-      def create_index(shards: 5)
-        client.indices.create(
-          index: index_name,
-          body: {
-            settings: {
-              index: {
-                # static settings
-                number_of_shards: shards,
-                # dynamic settings
-                max_result_window: ArchiveConfig.search[:max_results]
-              }
-            }.merge(settings),
-            mappings: mapping
-          }
-        )
-      end
-
-      def prepare_for_testing
-        return unless Rails.env.test?
-        delete_index
-        create_index(shards: 1)
-      end
-
-      # Note that the index must exist before you can set the mapping
-      def create_mapping
-        client.indices.put_mapping(
-          index: index_name,
-          type: document_type,
-          body: mapping
-        )
-      end
-
-      def mapping
-        load_file_json("mapping")
-      end
-
-      def settings
-        load_file_json("settings")
-      end
-
-      def load_file_json(filetype)
-        file = File.join(
-          File.dirname(__FILE__),
-          "#{filetype}.json"
-        )
-        JSON.parse(File.read(file))
-      end
-      
-      def index_all(skip_delete: false)
+      # Start from scratch and index all the things
+      def full_reindex(skip_delete: false)
         unless skip_delete
-          delete_index
-          create_index
+          index_class.new(client).delete_index
+          index_class.new(client).create_index
         end
         index_from_db
       end
 
+      # Index all the things asynchronously
       def index_from_db
         total = (indexables.count / BATCH_SIZE) + 1
         i = 1
@@ -97,22 +48,11 @@ module Search
         end
       end
 
+      # An ActiveRecord relation for the things we want to index
       # Add conditions here
       def indexables
         Rails.logger.info "Blueshirt: Logging use of constantize class self.indexables #{klass}"
         klass.constantize
-      end
-
-      def index_name
-        [
-          ArchiveConfig.search[:prefix],
-          Rails.env,
-          klass.underscore.pluralize
-        ].join("_")
-      end
-
-      def document_type
-        klass.underscore
       end
 
       # Should be called after a batch update, with the IDs that were successfully
@@ -122,6 +62,7 @@ module Search
         indexables.successful_reindex(ids)
       end
 
+      # Given a set of ids, return the objects in a hash keyed by id
       def get_records(ids)
         Rails.logger.info "Blueshirt: Logging use of constantize class objects #{klass}"
         klass.constantize.where(id: ids).inject({}) do |h, obj|
@@ -129,7 +70,23 @@ module Search
         end
       end
 
-      def batch(ids)
+      # Originally added to allow IndexSweeper to find the Elasticsearch document
+      # ids when they do not match the associated ActiveRecord objects' ids.
+      #
+      # Override in subclasses if necessary.
+      def find_elasticsearch_ids(ids)
+        ids
+      end
+
+      # Batch index a group of records
+      def batch_index_documents(ids)
+        client.bulk(body: batch_request_body(ids))
+      end
+
+      # Set up a batch request for a group of records
+      # If we have an id, but there's no record in the database,
+      # we want to delete the item from the search index
+      def batch_request_body(ids)
         @batch = []
         objects = get_records(ids)
         ids.each do |id|
@@ -144,14 +101,10 @@ module Search
         @batch
       end
 
-      def index_documents
-        client.bulk(body: batch)
-      end
-
+      # Synchronously index an object
       def index_document(object)
         info = {
           index:  index_name,
-          type:   document_type,
           id:     document_id(object.id),
           body:   document(object)
         }
@@ -164,13 +117,13 @@ module Search
       def routing_info(id)
         {
           '_index' => index_name,
-          '_type' => document_type,
           '_id' => id
         }
       end
 
+      # The json document version of the object
       def document(object)
-        object.as_json(root: false)
+        document_class.new(object).as_json
       end
 
       # can be overriden by our bookmarkable indexers

@@ -18,5 +18,7 @@ module Ao3Api
     config.autoload_paths += %w(search tags users works).map{ |dir| "#{Rails.root}/app/models/#{dir}" }
 
     config.action_mailer.default_url_options = { host: '127.0.0.1' }
+
+    config.active_job.queue_adapter = :sidekiq
   end
 end

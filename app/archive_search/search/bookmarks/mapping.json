@@ -1,143 +1,141 @@
 {
-  "bookmark": {
-    "properties": {
-      "anonymous": {
-        "type": "boolean"
-      },
-      "bookmarkable_date": {
-        "type": "date"
-      },
-      "bookmarkable_id": {
-        "type": "long"
-      },
-      "bookmarkable_join": {
-        "type": "join",
-        "eager_global_ordinals": true,
-        "relations": {
-          "bookmarkable": "bookmark"
-        }
-      },
-      "bookmarkable_type": {
-        "type": "keyword"
-      },
-      "bookmarker": {
-        "type": "text",
-        "analyzer": "simple"
-      },
-      "category_ids": {
-        "type": "long"
-      },
-      "character_ids": {
-        "type": "long"
-      },
-      "collection_ids": {
-        "type": "long"
-      },
-      "complete": {
-        "type": "boolean"
-      },
-      "created_at": {
-        "type": "date"
-      },
-      "creators": {
-        "type": "text",
-        "analyzer": "simple"
-      },
-      "fandom_ids": {
-        "type": "long"
-      },
-      "filter_ids": {
-        "type": "long"
-      },
-      "freeform_ids": {
-        "type": "long"
-      },
-      "hidden_by_admin": {
-        "type": "boolean"
-      },
-      "id": {
-        "type": "long"
-      },
-      "language_id": {
-        "type": "long"
-      },
-      "notes": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "posted": {
-        "type": "boolean"
-      },
-      "private": {
-        "type": "boolean"
-      },
-      "pseud_id": {
-        "type": "long"
-      },
-      "pseud_ids": {
-        "type": "long"
-      },
-      "rating_ids": {
-        "type": "long"
-      },
-      "rec": {
-        "type": "boolean"
-      },
-      "relationship_ids": {
-        "type": "long"
-      },
-      "restricted": {
-        "type": "boolean"
-      },
-      "revised_at": {
-        "type": "date"
-      },
-      "summary": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "tag": {
-        "type": "text",
-        "analyzer": "simple"
-      },
-      "tag_ids": {
-        "type": "long"
-      },
-      "title": {
-        "type": "text",
-        "analyzer": "simple"
-      },
-      "unrevealed": {
-        "type": "boolean"
-      },
-      "updated_at": {
-        "type": "date"
-      },
-      "user_id": {
-        "type": "long"
-      },
-      "warning_ids": {
-        "type": "long"
-      },
-      "with_notes": {
-        "type": "boolean"
-      },
-      "word_count": {
-        "type": "long"
-      },
-      "work_types": {
-        "type": "keyword"
+  "properties": {
+    "anonymous": {
+      "type": "boolean"
+    },
+    "bookmarkable_date": {
+      "type": "date"
+    },
+    "bookmarkable_id": {
+      "type": "long"
+    },
+    "bookmarkable_join": {
+      "type": "join",
+      "eager_global_ordinals": true,
+      "relations": {
+        "bookmarkable": "bookmark"
       }
+    },
+    "bookmarkable_type": {
+      "type": "keyword"
+    },
+    "bookmarker": {
+      "type": "text",
+      "analyzer": "simple"
+    },
+    "category_ids": {
+      "type": "long"
+    },
+    "character_ids": {
+      "type": "long"
+    },
+    "collection_ids": {
+      "type": "long"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "created_at": {
+      "type": "date"
+    },
+    "creators": {
+      "type": "text",
+      "analyzer": "simple"
+    },
+    "fandom_ids": {
+      "type": "long"
+    },
+    "filter_ids": {
+      "type": "long"
+    },
+    "freeform_ids": {
+      "type": "long"
+    },
+    "hidden_by_admin": {
+      "type": "boolean"
+    },
+    "id": {
+      "type": "long"
+    },
+    "language_id": {
+      "type": "long"
+    },
+    "notes": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "posted": {
+      "type": "boolean"
+    },
+    "private": {
+      "type": "boolean"
+    },
+    "pseud_id": {
+      "type": "long"
+    },
+    "pseud_ids": {
+      "type": "long"
+    },
+    "rating_ids": {
+      "type": "long"
+    },
+    "rec": {
+      "type": "boolean"
+    },
+    "relationship_ids": {
+      "type": "long"
+    },
+    "restricted": {
+      "type": "boolean"
+    },
+    "revised_at": {
+      "type": "date"
+    },
+    "summary": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "tag": {
+      "type": "text",
+      "analyzer": "simple"
+    },
+    "tag_ids": {
+      "type": "long"
+    },
+    "title": {
+      "type": "text",
+      "analyzer": "simple"
+    },
+    "unrevealed": {
+      "type": "boolean"
+    },
+    "updated_at": {
+      "type": "date"
+    },
+    "user_id": {
+      "type": "long"
+    },
+    "warning_ids": {
+      "type": "long"
+    },
+    "with_notes": {
+      "type": "boolean"
+    },
+    "word_count": {
+      "type": "long"
+    },
+    "work_types": {
+      "type": "keyword"
     }
   }
 }

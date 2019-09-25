@@ -2,7 +2,15 @@
 
 module Search
   module Base
-    class Facet < Struct.new(:id, :name, :count)
+    # A simple wrapper for search aggregation data
+    class Facet
+      attr_reader :id, :name, :count
+
+      def initialize(id:, name:, count:)
+        @id = id
+        @name = name
+        @count = count
+      end
     end
   end
 end

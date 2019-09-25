@@ -1,183 +1,181 @@
 {
-  "work" : {
-    "properties" : {
-      "archive_warning_ids" : {
-        "type" : "long"
-      },
-      "authors_to_sort_on" : {
-        "type" : "keyword"
-      },
-      "backdate" : {
-        "type" : "boolean"
-      },
-      "bookmarks_count" : {
-        "type" : "long"
-      },
-      "category_ids" : {
-        "type" : "long"
-      },
-      "character_ids" : {
-        "type" : "long"
-      },
-      "collection_ids" : {
-        "type" : "long"
-      },
-      "comments_count" : {
-        "type" : "long"
-      },
-      "complete" : {
-        "type" : "boolean"
-      },
-      "created_at" : {
-        "type" : "date"
-      },
-      "creators" : {
-        "type" : "text"
-      },
-      "crossover" : {
-        "type" : "boolean"
-      },
-      "endnotes" : {
-        "type" : "text",
-        "fields" : {
-          "keyword" : {
-            "type" : "keyword",
-            "ignore_above" : 256
-          }
+  "properties" : {
+    "archive_warning_ids" : {
+      "type" : "long"
+    },
+    "authors_to_sort_on" : {
+      "type" : "keyword"
+    },
+    "backdate" : {
+      "type" : "boolean"
+    },
+    "bookmarks_count" : {
+      "type" : "long"
+    },
+    "category_ids" : {
+      "type" : "long"
+    },
+    "character_ids" : {
+      "type" : "long"
+    },
+    "collection_ids" : {
+      "type" : "long"
+    },
+    "comments_count" : {
+      "type" : "long"
+    },
+    "complete" : {
+      "type" : "boolean"
+    },
+    "created_at" : {
+      "type" : "date"
+    },
+    "creators" : {
+      "type" : "text"
+    },
+    "crossover" : {
+      "type" : "boolean"
+    },
+    "endnotes" : {
+      "type" : "text",
+      "fields" : {
+        "keyword" : {
+          "type" : "keyword",
+          "ignore_above" : 256
         }
-      },
-      "expected_number_of_chapters" : {
-        "type" : "long"
-      },
-      "fandom_ids" : {
-        "type" : "long"
-      },
-      "filter_ids" : {
-        "type" : "long"
-      },
-      "freeform_ids" : {
-        "type" : "long"
-      },
-      "hidden_by_admin" : {
-        "type" : "boolean"
-      },
-      "hits" : {
-        "type" : "long"
-      },
-      "id" : {
-        "type" : "long"
-      },
-      "imported_from_url" : {
-        "type" : "keyword"
-      },
-      "in_anon_collection" : {
-        "type" : "boolean"
-      },
-      "in_unrevealed_collection" : {
-        "type" : "boolean"
-      },
-      "kudos_count" : {
-        "type" : "long"
-      },
-      "language_id" : {
-        "type" : "long"
-      },
-      "major_version" : {
-        "type" : "long"
-      },
-      "minor_version" : {
-        "type" : "long"
-      },
-      "moderated_commenting_enabled" : {
-        "type" : "boolean"
-      },
-      "nonfiction" : {
-        "type" : "boolean"
-      },
-      "notes" : {
-        "type" : "text",
-        "fields" : {
-          "keyword" : {
-            "type" : "keyword",
-            "ignore_above" : 256
-          }
+      }
+    },
+    "expected_number_of_chapters" : {
+      "type" : "long"
+    },
+    "fandom_ids" : {
+      "type" : "long"
+    },
+    "filter_ids" : {
+      "type" : "long"
+    },
+    "freeform_ids" : {
+      "type" : "long"
+    },
+    "hidden_by_admin" : {
+      "type" : "boolean"
+    },
+    "hits" : {
+      "type" : "long"
+    },
+    "id" : {
+      "type" : "long"
+    },
+    "imported_from_url" : {
+      "type" : "keyword"
+    },
+    "in_anon_collection" : {
+      "type" : "boolean"
+    },
+    "in_unrevealed_collection" : {
+      "type" : "boolean"
+    },
+    "kudos_count" : {
+      "type" : "long"
+    },
+    "language_id" : {
+      "type" : "long"
+    },
+    "major_version" : {
+      "type" : "long"
+    },
+    "minor_version" : {
+      "type" : "long"
+    },
+    "moderated_commenting_enabled" : {
+      "type" : "boolean"
+    },
+    "nonfiction" : {
+      "type" : "boolean"
+    },
+    "notes" : {
+      "type" : "text",
+      "fields" : {
+        "keyword" : {
+          "type" : "keyword",
+          "ignore_above" : 256
         }
-      },
-      "otp" : {
-        "type" : "boolean"
-      },
-      "posted" : {
-        "type" : "boolean"
-      },
-      "pseud_ids" : {
-        "type" : "long"
-      },
-      "rating_ids" : {
-        "type" : "long"
-      },
-      "relationship_ids" : {
-        "type" : "long"
-      },
-      "restricted" : {
-        "type" : "boolean"
-      },
-      "revised_at" : {
-        "type" : "date"
-      },
-      "series" : {
-        "properties" : {
-          "id" : {
-            "type" : "long"
-          },
-          "position" : {
-            "type" : "long"
-          },
-          "title" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
-              }
+      }
+    },
+    "otp" : {
+      "type" : "boolean"
+    },
+    "posted" : {
+      "type" : "boolean"
+    },
+    "pseud_ids" : {
+      "type" : "long"
+    },
+    "rating_ids" : {
+      "type" : "long"
+    },
+    "relationship_ids" : {
+      "type" : "long"
+    },
+    "restricted" : {
+      "type" : "boolean"
+    },
+    "revised_at" : {
+      "type" : "date"
+    },
+    "series" : {
+      "properties" : {
+        "id" : {
+          "type" : "long"
+        },
+        "position" : {
+          "type" : "long"
+        },
+        "title" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
             }
           }
         }
-      },
-      "summary" : {
-        "type" : "text",
-        "fields" : {
-          "keyword" : {
-            "type" : "keyword",
-            "ignore_above" : 256
-          }
-        }
-      },
-      "tag" : {
-        "type" : "text",
-        "analyzer" : "simple"
-      },
-      "title" : {
-        "type" : "text",
-        "analyzer" : "simple"
-      },
-      "title_to_sort_on" : {
-        "type" : "keyword"
-      },
-      "updated_at" : {
-        "type" : "date"
-      },
-      "user_ids" : {
-        "type" : "long"
-      },
-      "warning_ids" : {
-        "type" : "long"
-      },
-      "word_count" : {
-        "type" : "long"
-      },
-      "work_types" : {
-        "type" : "keyword"
       }
+    },
+    "summary" : {
+      "type" : "text",
+      "fields" : {
+        "keyword" : {
+          "type" : "keyword",
+          "ignore_above" : 256
+        }
+      }
+    },
+    "tag" : {
+      "type" : "text",
+      "analyzer" : "simple"
+    },
+    "title" : {
+      "type" : "text",
+      "analyzer" : "simple"
+    },
+    "title_to_sort_on" : {
+      "type" : "keyword"
+    },
+    "updated_at" : {
+      "type" : "date"
+    },
+    "user_ids" : {
+      "type" : "long"
+    },
+    "warning_ids" : {
+      "type" : "long"
+    },
+    "word_count" : {
+      "type" : "long"
+    },
+    "work_types" : {
+      "type" : "keyword"
     }
   }
 }

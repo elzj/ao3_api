@@ -10,7 +10,7 @@ module Search
       end
 
       def query
-        @search_form.query
+        @search_form.querier
       end
 
       def options

@@ -3,55 +3,40 @@
 module Search
   module Pseuds
     class Query < Search::Base::Query
-      def klass
-        'Pseud'
+      def indexer_class
+        Indexer
       end
 
-      def indexer
-        Search::Pseuds::Indexer.new
+      def result_class
+        Result
       end
 
-      def filters
-        [collection_filter, fandom_filter].compact
-      end
-
-      def queries
-        [general_query, name_query].compact
-      end
-
-      ###########
-      # FILTERS
-      ###########
-
-      def collection_filter
-        { term: { collection_ids: options[:collection_id] } } if options[:collection_id]
-      end
-
-      def fandom_filter
-        key = User.current_user.present? ? "fandoms.id" : "fandoms.id_for_public"
-        if options[:fandom_ids]
-          options[:fandom_ids].map do |fandom_id|
-            { term: { key => fandom_id } }
-          end
+      # Add the collection and fandom filters
+      def add_filters
+        return if options[:fandom_ids].blank?
+        key = logged_in? ? "fandoms.id" : "fandoms.id_for_public"
+        options[:fandom_ids].map do |fandom_id|
+          query.add_term_filter(key, fandom_id)
         end
       end
 
-      ###########
-      # QUERIES
-      ###########
+      def add_queries
+        query.add_must(general_query) if options[:query]
+        query.add_match(:byline, options[:name]) if options[:name]
+      end
 
       def general_query
         {
-          simple_query_string:{
-            query: escape_reserved_characters(options[:query]),
+          simple_query_string: {
+            query: options[:query],
             fields: ["byline^5", "name^4", "user_login^2", "description"],
             default_operator: "AND"
           }
-        } if options[:query]
+        }
       end
 
-      def name_query
-        { match: { byline: escape_reserved_characters(options[:name]) } } if options[:name]
+      def logged_in?
+        options[:current_user].is_a?(User)
       end
     end
   end

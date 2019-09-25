@@ -13,7 +13,7 @@ module Search
         @record = record
       end
 
-      def to_hash
+      def as_json
         record.as_json(
           root: false,
           only: WHITELISTED_ATTRIBUTES,

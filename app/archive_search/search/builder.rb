@@ -31,13 +31,13 @@ module Search
       self
     end
 
-    def add_match_filter(key, value, options = {})
+    def add_match(key, value, options = {})
       add_must(
         match_filter(key, value, options)
       )
     end
 
-    def add_match_exclusion(key, value, options = {})
+    def exclude_match(key, value, options = {})
       add_must_not(
         match_filter(key, value, options)
       )

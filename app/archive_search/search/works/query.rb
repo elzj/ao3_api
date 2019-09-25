@@ -57,7 +57,12 @@ module Search
 
       def add_tag_names
         return if included_tag_names.blank?
-        query.add_match_filter(:tag, included_tag_names.join(" "))
+        query.add_must(
+          multi_match: {
+            query: included_tag_names.join(" "),
+            fields: tag_name_fields
+          }
+        )
       end
 
       def exclude_tag_ids

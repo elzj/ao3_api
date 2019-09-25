@@ -2,21 +2,18 @@
 
 module Search
   module Tags
+    # Indexer for the tag class
     class Indexer < Search::Base::Indexer
       def klass
         "Tag"
       end
 
-      def load_file_json(filetype)
-        file = File.join(
-          File.dirname(__FILE__),
-          "#{filetype}.json"
-        )
-        JSON.parse(File.read(file))
+      def index_class
+        Index
       end
 
-      def document(object)
-        Search::Tags::Document.new(object).as_json
+      def document_class
+        Document
       end
     end
   end
