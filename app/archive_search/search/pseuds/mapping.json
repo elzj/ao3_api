@@ -1,0 +1,24 @@
+{
+  "pseud" : {
+    "properties" : {
+      "name" : {
+        "type" : "text",
+        "analyzer" : "simple"
+      },
+      "sortable_name" : {
+        "type" : "keyword"
+      },
+      "byline" : {
+        "type" : "text",
+        "analyzer" : "standard"
+      },
+      "user_login" : {
+        "type" : "text",
+        "analyzer" : "simple"
+      },
+      "fandom" : {
+        "type" : "nested"
+      }
+    }
+  }
+}

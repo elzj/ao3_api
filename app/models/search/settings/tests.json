@@ -1,7 +1,0 @@
-{
-  "analyzer" : {
-    "custom_analyzer" : {
-      // add properties in subclasses
-    }
-  }
-}

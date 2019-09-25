@@ -1,6 +1,11 @@
 require 'faker'
 
 FactoryBot.define do
+  factory :language do
+    short { 'en' }
+    name { 'English' }
+  end
+
   sequence(:login) do |n|
     "#{Faker::Lorem.characters(number: 8)}#{n}"
   end
@@ -32,5 +37,29 @@ FactoryBot.define do
 
   factory :freeform do
     name { Faker::Books::Lovecraft.word }
+  end
+
+  factory :work do
+    title    { Faker::Lorem.words(number: 4).to_s }
+    summary  { Faker::Lorem.sentences(number: 3).to_s }
+    notes    { Faker::Lorem.sentences(number: 4).to_s }
+    endnotes { Faker::Lorem.sentences(number: 4).to_s }
+    posted { true }
+    restricted { false }
+    language
+  end
+
+  factory :chapter do
+    position { 1 }
+    content { Faker::Lorem.paragraphs(number: 5).to_s }
+  end
+
+  factory :series do
+    title { Faker::Lorem.words(number: 6).to_s }
+  end
+
+  factory :collection do
+    name { Faker::Lorem.characters(number: 8).to_s }
+    title { Faker::Lorem.characters(number: 8).to_s }
   end
 end

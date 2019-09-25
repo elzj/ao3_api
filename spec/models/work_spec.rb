@@ -27,4 +27,39 @@ RSpec.describe Work, type: :model do
       expect(work.title).to eq("")
     end
   end
+
+  describe "#language_short" do
+    it "returns the short value for the language" do
+      work = Work.new
+      work.language = Language.new(short: 'de')
+      expect(work.language_short).to eq('de')
+    end
+
+    it "does not error when there is no language" do
+      work = Work.new
+      expect { work.language_short }.not_to raise_error
+    end
+  end
+
+  describe "#approved_collections" do
+    let(:work) { create(:work) }
+    let(:collection) { create(:collection) }
+
+    it "should return approved collections" do
+      work.collection_items.create(
+        collection_id: collection.id,
+        user_approval_status: 0
+      )
+      expect(work.approved_collections).to be_empty
+    end
+
+    it "should not return unapproved collections" do
+      work.collection_items.create(
+        collection_id: collection.id,
+        user_approval_status: 1,
+        collection_approval_status: 1
+      )
+      expect(work.approved_collections).to include(collection)
+    end
+  end
 end

@@ -2,7 +2,7 @@ class Api::V3::TagsController < Api::V3::BaseController
   respond_to :json
 
   def index
-    tags = TagSearch.new(query_params).results
+    tags = Search::Tags::Form.new(query_params).search_results
     respond_with tags.to_json
   end
 

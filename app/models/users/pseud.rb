@@ -2,10 +2,12 @@
 
 class Pseud < ApplicationRecord
   ### ASSOCIATIONS
+
   belongs_to :user
   has_many :creatorships
 
   ### VALIDATIONS
+  
   validates :name,
             presence: true,
             length: {
@@ -33,6 +35,7 @@ class Pseud < ApplicationRecord
   ### CALLBACKS
 
   ### CLASS METHODS
+  
   def self.default
     where(is_default: true)
   end
@@ -42,6 +45,9 @@ class Pseud < ApplicationRecord
   end
 
   ### INSTANCE METHODS
+
+  delegate :login, to: :user, prefix: true, allow_nil: true
+  
   def byline
     login = self.respond_to?(:user_name) ? user_name : user.login
     name == login ? name : "#{name} (#{login})"

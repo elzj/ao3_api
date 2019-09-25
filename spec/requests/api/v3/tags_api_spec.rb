@@ -1,20 +1,20 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-describe "Tags API", type: :request do
+describe "Tags API", type: :request, tag_search: :true do
   describe "#index" do
-    before(:all) do
-      TagIndexer.new.prepare_for_testing
-    end
     before(:each) do
+      Search::Tags::Indexer.new.prepare_for_testing
       tag = create(:freeform, name: "fluff", canonical: false)
-      index_and_refresh(TagIndexer, tag.reload)
+      index_and_refresh(Search::Tags::Indexer, tag.reload)
     end
 
     it "returns accurate tag search results" do
       params = { query: { name: "fluff", canonical: false, tag_type: "Freeform" } }
       get "/api/v3/tags.json?" + params.to_query
       tags = JSON.parse(response.body)
-      expect(tags.any?{|tag| tag['name'] == "fluff"}).to be_truthy
+      expect(tags.any? { |tag| tag['name'] == "fluff" }).to be_truthy
     end
 
     it "searches by canonical" do

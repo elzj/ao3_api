@@ -1,7 +1,20 @@
 # frozen_string_literal: true
 
 class Work < ApplicationRecord
+  include Collectible
+  include Creation
+  include Taggable
+
   ### ASSOCIATIONS ###
+  
+  belongs_to :language
+
+  has_many :chapters
+
+  has_many :serial_works
+  has_many :series, through: :serial_works
+
+  has_one :stat_counter
 
   ### VALIDATIONS ###
 
@@ -22,7 +35,16 @@ class Work < ApplicationRecord
 
   before_validation :clean_title
 
+  ### CLASS METHODS ###
+
+  def self.posted
+    where(posted: true)
+  end
+
   ### INSTANCE METHODS ###
+
+  # creates a language_short method
+  delegate :short, to: :language, prefix: true, allow_nil: true
 
   def clean_title
     self.title = (title || '').strip

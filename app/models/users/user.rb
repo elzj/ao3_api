@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_one :preference
   has_one :profile
   has_many :pseuds
+  has_many :creatorships, through: :pseuds
 
   ### VALIDATIONS
 
