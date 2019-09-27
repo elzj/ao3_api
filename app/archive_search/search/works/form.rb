@@ -82,8 +82,11 @@ module Search
       end
 
       def set_sorting
-        self.sort_column ||= default_sort_column
-        self.sort_direction ||= default_sort_direction
+        unless legal_sort_values.includes?(sort_column)
+          self.sort_column = default_sort_column
+        end
+        return if sort_direction && %w(asc desc).includes?(sort_direction.downcase)
+        self.sort_direction = default_sort_direction
       end
 
       def clean_up_angle_brackets
@@ -176,7 +179,7 @@ module Search
         filtering? ? SORT_OPTIONS[1..-1] : SORT_OPTIONS
       end
 
-      def sort_values
+      def legal_sort_values
         sort_options.map(&:last)
       end
 
