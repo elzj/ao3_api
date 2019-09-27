@@ -7,8 +7,8 @@ services:
   - elasticsearch
 before_install:
   - mysql -e 'CREATE DATABASE ao3_api_test;'
-  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.3.2-amd64.deb && sudo dpkg -i --force-confnew elasticsearch-7.3.2-amd64.deb && sudo service elasticsearch restart
 before_script:
+  - bash script/travis_elasticsearch_upgrade.sh
   - sleep 10
   - bin/yarn
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
