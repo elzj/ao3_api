@@ -2,51 +2,46 @@
 
 module Search
   module Works
+    # Form interface for work searches    
     class Form < Search::Base::Form
-      ATTRIBUTES = [
-        :archive_warning_ids,
-        :bookmarks_count,
-        :category_ids,
-        :character_names,
-        :character_ids,
-        :collected,
-        :collection_ids,
-        :comments_count,
-        :complete,
-        :creators,
-        :crossover,
-        :date_from,
-        :date_to,
-        :excluded_tag_names,
-        :excluded_tag_ids,
-        :faceted,
-        :fandom_names,
-        :fandom_ids,
-        :filter_ids,
-        :freeform_names,
-        :freeform_ids,
-        :hit_count,
-        :kudos_count,
-        :language_id,
-        :other_tag_names,
-        :page,
-        :pseud_ids,
-        :query,
-        :rating_ids,
-        :relationship_names,
-        :relationship_ids,
-        :revised_at,
-        :single_chapter,
-        :sort_column,
-        :sort_direction,
-        :title,
-        :word_count,
-        :words_from,
-        :words_to
-      ]
+      TAG_FIELDS = %i(
+        archive_warning_ids category_ids rating_ids
+        character_names character_ids
+        fandom_names fandom_ids
+        freeform_names freeform_ids
+        relationship_names relationship_ids
+        excluded_tag_names excluded_tag_ids
+        tag_names filter_ids
+      ).freeze
 
-      ATTRIBUTES.each do |filterable|
-        define_method(filterable) { options[filterable] }
+      NUMBER_AND_DATE_FIELDS = %i(
+        bookmarks_count comments_count kudos_count hit_count
+        date_from date_to revised_at
+        word_count words_from words_to
+      ).freeze
+
+      ASSOCIATION_FIELDS = %i(
+        collection_ids language_id pseud_ids user_ids
+      ).freeze
+
+      GENERAL_FIELDS = %i(
+        complete creators crossover
+        page q single_chapter
+        sort_column sort_direction title
+        filtered collected works_parent current_user
+      ).freeze
+
+      ATTRIBUTES = (
+        TAG_FIELDS +
+        NUMBER_AND_DATE_FIELDS +
+        ASSOCIATION_FIELDS +
+        GENERAL_FIELDS
+      ).freeze
+
+      attr_accessor(*ATTRIBUTES)
+
+      def self.permitted_params
+        ATTRIBUTES
       end
 
       # Make a direct request to the elasticsearch count api
@@ -62,29 +57,45 @@ module Search
         Query
       end
 
-      def process_options
+      def process_data
         super
 
         set_sorting
         clean_up_angle_brackets
         add_owner
+        load_tags
+      end
+
+      # Numeric fields to sanitize
+      def number_fields
+        %i(words_to words_from)
+      end
+
+      # Date fields to sanitize
+      def date_fields
+        %i(date_to date_from)
+      end
+
+      # Boolean fields to sanitize
+      def boolean_fields
+        %i(complete crossover single_chapter)
       end
 
       def set_sorting
-        @options[:sort_column] ||= default_sort_column
-        @options[:sort_direction] ||= default_sort_direction
+        self.sort_column ||= default_sort_column
+        self.sort_direction ||= default_sort_direction
       end
 
       def clean_up_angle_brackets
-        %i(word_count hit_count kudos_count comments_count bookmarks_count revised_at query).each do |field|
-          next if @options[field].blank?
-          @options[field] = @options[field].gsub("&gt;", ">").gsub("&lt;", "<")
+        %i(word_count hit_count kudos_count comments_count bookmarks_count revised_at query_string).each do |field|
+          value = send(field)
+          next if value.blank?
+          self.send("#{field}=", value.gsub("&gt;", ">").gsub("&lt;", "<"))
         end
       end
 
       def add_owner
-        owner = options[:works_parent]
-        field = case owner
+        field = case works_parent
                 when Tag
                   :filter_ids
                 when Pseud
@@ -95,8 +106,48 @@ module Search
                   :collection_ids
                 end
         return unless field.present?
-        options[field] ||= []
-        options[field] << owner.id
+        value = send(field) || []
+        send("#{field}=", value + [owner.id])
+      end
+
+      def load_tags
+        ids = Tag::TAGGABLE_TYPES.flat_map do |tag_type|
+          send("#{tag_type.underscore}_ids")
+        end
+        self.filter_ids = (
+          [self.filter_ids] + ids + processed_tag_name_ids
+        ).flatten.compact.uniq
+        process_exclusions
+      end
+
+      def processed_tag_name_ids
+        names = parse_tag_names
+        tags = Tag.where(name: names).pluck(:id, :name)
+        # Use our non-user-facing field to hold the missing
+        self.tag_names = names - tags.map(&:last)
+        tags.map(&:first)
+      end
+
+      def parse_tag_names
+        tag_name_fields = %w(
+          fandom_names character_names relationship_names
+          freeform_names tag_names
+        )
+        tag_name_fields.flat_map do |field|
+          value = send(field)
+          next if value.blank?
+          value.split(',').map(&:squish).reject(&:blank?)
+        end.uniq.compact
+      end
+
+      def process_exclusions
+        value = self.excluded_tag_names
+        return unless value
+        names = value.split(',').map(&:squish).reject(&:blank?)
+        return if names.blank?
+        ids = Tag.where(name: names).pluck(:id)
+        self.excluded_tag_ids ||= []
+        self.excluded_tag_ids << ids
       end
 
       def summary
@@ -120,14 +171,6 @@ module Search
         ['Bookmarks', 'bookmarks_count']
       ].freeze
 
-      def sort_columns
-        options[:sort_column] || default_sort_column
-      end
-
-      def sort_direction
-        options[:sort_direction] || default_sort_direction
-      end
-
       # Don't include 'best match' when filtering
       def sort_options
         filtering? ? SORT_OPTIONS[1..-1] : SORT_OPTIONS
@@ -138,8 +181,8 @@ module Search
       end
 
       # extract the pretty name
-      def name_for_sort_column(sort_column)
-        Hash[SORT_OPTIONS.map { |v| [v[1], v[0]] }][sort_column]
+      def name_for_sort_column(column)
+        Hash[SORT_OPTIONS.map { |v| [v[1], v[0]] }][column]
       end
 
       # Default to date if we're filtering and
@@ -159,7 +202,7 @@ module Search
 
       # Is this a page with filtering?
       def filtering?
-        options[:faceted] || options[:collected]
+        filtered
       end
     end
   end

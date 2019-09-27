@@ -7,15 +7,15 @@ module Search
         'Bookmark'
       end
 
-      def indexer
-        Search::Bookmarks::Indexer.new
+      def indexer_class
+        Indexer
       end
 
       def filters
         [].compact
       end
 
-      def queries
+      def musts
         [].compact
       end
     end

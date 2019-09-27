@@ -16,6 +16,8 @@ class Api::V3::TagsController < Api::V3::BaseController
   protected
 
   def query_params
-    params.require(:query).permit(:name, :canonical, :tag_type)
+    params.require(:query).permit(
+      :name, :canonical, :tag_type
+    ).merge(current_user: current_user)
   end
 end

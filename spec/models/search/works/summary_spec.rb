@@ -13,21 +13,21 @@ RSpec.describe Search::Works::Summary, type: :model do
 
     context "with a query" do
       it "begins with the query text" do
-        summary = summary_for(query: "sharks lasers")
+        summary = summary_for(q: "sharks lasers")
         expect(summary.text).to eq("sharks lasers" + default_sort)
       end
     end
 
     context "with a title search" do
       it "adds the title" do
-        summary = summary_for(query: "sharks", title: "awesome")
+        summary = summary_for(q: "sharks", title: "awesome")
         expect(summary.text).to eq("sharks Title: awesome" + default_sort)
       end
     end
 
     context "with a creator search" do
       it "adds the creator" do
-        summary = summary_for(query: "sharks", creators: "Melville")
+        summary = summary_for(q: "sharks", creators: "Melville")
         expect(summary.text).to eq("sharks Creator: Melville" + default_sort)
       end
     end

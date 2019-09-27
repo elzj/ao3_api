@@ -22,7 +22,7 @@ describe "Pseuds API", type: :request, pseud_search: :true do
     end
 
     it "allows partial name searches" do
-      params = { query: { query: "Dea*" } }
+      params = { query: { q: "Dea*" } }
       get "/api/v3/pseuds.json?" + params.to_query
       pseuds = JSON.parse(response.body)
       names = pseuds.map { |pseud| pseud['name'] }

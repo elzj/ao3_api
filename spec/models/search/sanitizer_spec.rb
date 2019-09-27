@@ -16,6 +16,45 @@ RSpec.describe Search::Sanitizer, type: :model do
     end
   end
 
+  describe '.sanitize_integer' do
+    it 'removes separators before converting to integer' do
+      expect(Search::Sanitizer.sanitize_integer("525,600")).to eq(525600)
+    end
+  end
+
+  describe '.sanitize_date' do
+    it 'scrubs bad values' do
+      sanitized = Search::Sanitizer.sanitize_date("not a date")
+      expect(sanitized).to be_nil
+    end
+
+    it 'turns a string into a date' do
+      date = "1999-01-01".to_date
+      sanitized = Search::Sanitizer.sanitize_date("1999-01-01")
+      expect(sanitized).to eq(date)
+    end
+
+    it 'returns a normal date unchanged' do
+      date = "2011-11-11".to_date
+      sanitized = Search::Sanitizer.sanitize_date(date)
+      expect(sanitized).to eq(date)
+    end
+
+    it 'sets a negative date to the year zero' do
+      date = "2011-11-11".to_date - 3000.years
+      replacement = "0000-11-11".to_date
+      sanitized = Search::Sanitizer.sanitize_date(date)
+      expect(sanitized).to eq(replacement)
+    end
+
+    it 'sets an absurdly large date to the year 9999' do
+      date = "2011-11-11".to_date + 30000.years
+      replacement = "9999-11-11".to_date
+      sanitized = Search::Sanitizer.sanitize_date(date)
+      expect(sanitized).to eq(replacement)
+    end
+  end
+
   describe '.sanitize_string' do
     it 'escapes reserved characters' do
       str = "(All) the ~[re-served] char:act+er/s!?"

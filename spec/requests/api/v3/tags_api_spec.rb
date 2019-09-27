@@ -6,36 +6,40 @@ describe "Tags API", type: :request, tag_search: :true do
   describe "#index" do
     before(:each) do
       Search::Tags::Index.new.prepare_for_testing
-      tag = create(:freeform, name: "fluff", canonical: false)
-      index_and_refresh(Search::Tags::Indexer, [tag.reload])
+      fluff = Freeform.create(name: "fluff", canonical: false)
+      kirk = Character.create(name: "James T. Kirk", canonical: true)
+      index_and_refresh(Search::Tags::Indexer, [fluff, kirk])
     end
 
     it "returns accurate tag search results" do
       params = { query: { name: "fluff", canonical: false, tag_type: "Freeform" } }
       get "/api/v3/tags.json?" + params.to_query
-      tags = JSON.parse(response.body)
-      expect(tags.any? { |tag| tag['name'] == "fluff" }).to be_truthy
+      names = JSON.parse(response.body).map { |tag| tag['name'] }
+      expect(names).to include("fluff")
     end
 
     it "searches by canonical" do
-      params = { query: { name: "fluff", canonical: true, tag_type: "Freeform" } }
+      params = { query: { canonical: true } }
       get "/api/v3/tags.json?" + params.to_query
-      tags = JSON.parse(response.body)
-      expect(tags.any?{|tag| tag['name'] == "fluff"}).to be_falsey
+      names = JSON.parse(response.body).map { |tag| tag['name'] }
+      expect(names).to include("James T. Kirk")
+      expect(names).not_to include("fluff")
     end
 
     it "searches by type" do
-      params = { query: { name: "fluff", canonical: false, tag_type: "Fandom" } }
+      params = { query: { tag_type: "Freeform" } }
       get "/api/v3/tags.json?" + params.to_query
-      tags = JSON.parse(response.body)
-      expect(tags.any?{|tag| tag['name'] == "fluff"}).to be_falsey
+      names = JSON.parse(response.body).map { |tag| tag['name'] }
+      expect(names).to include("fluff")
+      expect(names).not_to include("James T. Kirk")
     end
 
     it "searches by name" do
-      params = { query: { name: "angst" } }
+      params = { query: { name: "james t. kirk" } }
       get "/api/v3/tags.json?" + params.to_query
-      tags = JSON.parse(response.body)
-      expect(tags.any?{|tag| tag['name'] == "fluff"}).to be_falsey
+      names = JSON.parse(response.body).map { |tag| tag['name'] }
+      expect(names).to include("James T. Kirk")
+      expect(names).not_to include("fluff")
     end
   end
 

@@ -2,31 +2,28 @@
 
 module Search
   module Tags
+    # Form interface for tag searches
     class Form < Search::Base::Form
-      ATTRIBUTES = %i(query name tag_type canonical).freeze
+      ATTRIBUTES = %w(q name tag_type canonical current_user).freeze
 
-      ATTRIBUTES.each do |filterable|
-        define_method(filterable) { options[filterable] }
+      attr_accessor(*ATTRIBUTES)
+
+      def attributes
+        self.as_json(only: ATTRIBUTES)
       end
 
       def query_class
         Query
       end
 
-      def process_options
-        super
-        standardize_options
+      # Boolean fields to sanitize
+      def boolean_fields
+        %i(canonical)
       end
 
-      # Clean up boolean options and escape text query
-      def standardize_options
-        [:canonical, :unwrangleable, :has_posted_works].each do |term|
-          next unless options[term].present?
-          options[term] = Search::Sanitizer.bool_value(options[term])
-        end
-        if options[:name].present?
-          options[:name] = Search::Sanitizer.sanitize_string(options[:name])
-        end
+      # String fields to sanitize
+      def string_fields
+        %i(name)
       end
     end
   end

@@ -22,8 +22,8 @@ module Search
 
       attr_reader :client
 
-      def initialize(client: nil)
-        @client = client || Search::Client.new_client
+      def initialize(client: Search::Client.new_client)
+        @client = client
       end
 
       def klass

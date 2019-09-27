@@ -2,14 +2,20 @@
 
 module Search
   module Base
+    # Builds and executes elasticsearch queries
     class Query
-      attr_reader :options, :client, :query
+      include Search::Shared::SearchTerms
 
-      # Options: page, per_page
+      attr_reader :client, :options, :filters, :musts, :must_nots, :shoulds, :aggregations
+
       def initialize(options = {})
-        @options = HashWithIndifferentAccess.new(options)
-        @query = Search::Builder.new
+        @options = options.with_indifferent_access
         @client = Search::Client.new_client
+        @filters = []
+        @musts = []
+        @must_nots = []
+        @shoulds = []
+        @aggregations = []
       end
 
       def indexer_class
@@ -27,16 +33,23 @@ module Search
       # Add the appropriate options to the query
       # and then return them as a hash
       def search_body
-        construct_query
-        query.body
+        body = Search::Builder.new(
+          filter: filters,
+          must: musts,
+          must_not: must_nots,
+          should: shoulds,
+          aggregations: aggregations,
+          sort_column: sort_column,
+          sort_direction: sort_direction,
+          page: page,
+          per_page: per_page
+        ).body
+        body
       end
 
       # Execute an Elasticsearch search with our query data
       def search
-        client.search(
-          index: index_name,
-          body: search_body
-        )
+        client.search(index: index_name, body: search_body)
       rescue Elasticsearch::Transport::Transport::Errors::BadRequest
         { error: "Your search failed because of a syntax error. Please try again." }
       end
@@ -54,28 +67,21 @@ module Search
         )['count']
       end
 
-      ### QUERY CONSTRUCTION ###
-
-      def construct_query
-        set_sorting
-        set_pagination
-        add_filters
-        add_queries
-      end
-
       # Sort by relevance by default
-      def set_sorting
-        query.set_sorting("_score", "desc")
+      def sort_column
+        options[:sort_column] || "_score"
       end
 
-      def set_pagination
-        query.set_pagination(page: options[:page])
+      def sort_direction
+        options[:sort_direction] || "desc"
       end
 
-      def add_filters
+      def page
+        options[:page] || 1
       end
 
-      def add_queries
+      def per_page
+        options[:per_page] || ArchiveConfig.items_per_page
       end
     end
   end

@@ -93,7 +93,7 @@ class Tag < ApplicationRecord
   end
 
   def self.for_pseud_with_count(pseud, type: nil, unrestricted: nil)
-    select_list = "tags.id, tags.name, tags.type, COUNT('tags.id') AS work_count"
+    select_list = "tags.id, tags.name, tags.type, COUNT('tags.id') AS count"
     query = with_direct_filtered_works.
               joins(filtered_works: :creatorships).
               select(select_list).

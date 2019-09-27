@@ -15,8 +15,11 @@
       "type" : "text",
       "analyzer" : "simple"
     },
-    "fandom" : {
-      "type" : "nested"
+    "tags" : {
+      "type" : "object"
+    },
+    "public_tags" : {
+      "type" : "object"
     }
   }
 }

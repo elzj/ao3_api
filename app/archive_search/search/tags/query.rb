@@ -2,6 +2,7 @@
 
 module Search
   module Tags
+    # Query builder for tag searches
     class Query < Search::Base::Query
       def klass
         'Tag'
@@ -11,42 +12,44 @@ module Search
         Indexer
       end
 
-      def add_filters
-        add_term_filters
-        add_terms_filters
-        add_wrangled_filter
+      # Filters that the results must match, generally number fields
+      def filters
+        @filters = (
+          term_filters + terms_filters + [wrangled_filter]
+        ).compact
       end
 
-      def add_queries
-        add_name_query
+      # Text queries that the results must match
+      def musts
+        @musts = [name_query].compact
       end
 
-      def add_term_filters
-        %i[tag_type canonical unwrangleable has_posted_works].each do |term|
-          query.add_term_filter(term, options[term])
+      # Return an array of term filters for each of our
+      # keyword and boolean options
+      def term_filters
+        %i(tag_type canonical unwrangleable has_posted_works).map do |field|
+          value = options[field]
+          term_filter(field, value) unless value.nil?
         end
       end
 
-      def add_terms_filters
-        %i[media_ids fandom_ids character_ids pre_fandom_ids pre_character_ids].each do |term|
-          query.add_terms_filter(term, options[term])
+      # Return an array of terms filters for each of our id options
+      def terms_filters
+        %i(media_ids fandom_ids character_ids pre_fandom_ids pre_character_ids).map do |field|
+          value = options[field]
+          terms_filter(field, value) unless value.nil?
         end
       end
 
-      def add_wrangled_filter
-        return if options[:wrangled].nil?
-        query.add_filter({ exists: { field: "fandom_ids" } })
+      # Say a tag is wrangled if it has fandoms
+      def wrangled_filter
+        exists_filter(:fandom_ids) if options[:wrangled]
       end
 
-      def add_name_query
-        return if options[:name].blank?
-        query.add_must({
-          query_string: {
-            query: options[:name],
-            fields: ["name.exact^2", "name"],
-            default_operator: "and"
-          }
-        })
+      # Search by tag name, weighting exact matches higher
+      def name_query
+        fields = ["name.exact^2", "name"]
+        query_string_query(fields, options[:name]) if options[:name].present?
       end
     end
   end

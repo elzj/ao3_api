@@ -7,8 +7,8 @@ module Search
       BATCH_SIZE = 1000
       attr_reader :client
 
-      def initialize(client: nil)
-        @client = client || Search::Client.new_client
+      def initialize(client: Search::Client.new_client)
+        @client = client
       end
 
       # Override in subclasses
@@ -37,13 +37,18 @@ module Search
         index_from_db
       end
 
-      # Index all the things asynchronously
-      def index_from_db
+      # Index all the things
+      def index_from_db(async: true)
         total = (indexables.count / BATCH_SIZE) + 1
         i = 1
         indexables.find_in_batches(batch_size: BATCH_SIZE) do |group|
-          puts "Queueing #{klass} batch #{i} of #{total}"
-          AsyncIndexer.new(self, :world).enqueue_ids(group.map(&:id))
+          if async
+            puts "Queueing #{klass} batch #{i} of #{total}"
+            # AsyncIndexer.new(self, :world).enqueue_ids(group.map(&:id))
+          else
+            puts "Indexing #{klass} batch #{i} of #{total}"
+            batch_index_documents(group.group_by(&:id))
+          end
           i += 1
         end
       end
@@ -65,9 +70,7 @@ module Search
       # Given a set of ids, return the objects in a hash keyed by id
       def get_records(ids)
         Rails.logger.info "Blueshirt: Logging use of constantize class objects #{klass}"
-        klass.constantize.where(id: ids).inject({}) do |h, obj|
-          h.merge(obj.id => obj)
-        end
+        klass.constantize.where(id: ids).group_by(&:id)
       end
 
       # Originally added to allow IndexSweeper to find the Elasticsearch document
@@ -78,22 +81,29 @@ module Search
         ids
       end
 
+      def batch_index_ids(ids)
+        records = get_records(ids)
+        batch_index_documents(records)
+      end
+
       # Batch index a group of records
-      def batch_index_documents(ids)
-        client.bulk(body: batch_request_body(ids))
+      def batch_index_documents(records)
+        client.bulk(body: batch_request_body(records))
       end
 
       # Set up a batch request for a group of records
       # If we have an id, but there's no record in the database,
       # we want to delete the item from the search index
-      def batch_request_body(ids)
+      def batch_request_body(records)
         @batch = []
-        objects = get_records(ids)
-        ids.each do |id|
-          object = objects[id.to_i]
-          if object.present?
+        records.each_pair do |id, record|
+          if record.present?
+            # Makes it easier to use group_by
+            if record.is_a?(Array)
+              record = record.first
+            end
             @batch << { index: routing_info(id) }
-            @batch << document(object)
+            @batch << document(record)
           else
             @batch << { delete: routing_info(id) }
           end

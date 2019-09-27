@@ -18,6 +18,8 @@ class Api::V3::PseudsController < Api::V3::BaseController
   protected
 
   def query_params
-    params.require(:query).permit(:query, :name, :fandom, :collection_ids)
+    params.require(:query).permit(
+      :q, :name, :fandom, :collection_ids
+    ).merge(current_user: current_user)
   end
 end

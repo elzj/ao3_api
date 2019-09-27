@@ -4,20 +4,15 @@ module Search
   module Works
     # Generates a text summary of the search for display
     class Summary
-      def initialize(search_form)
-        @search_form = search_form
+      attr_reader :form
+
+      def initialize(form)
+        @form = form
         @lines = []
       end
 
-      def query
-        @search_form.querier
-      end
-
-      def options
-        @search_form.options
-      end
-
       def text
+        form.process_data unless form.processed?
         construct_summary
         @lines.uniq.join(" ")
       end
@@ -36,76 +31,79 @@ module Search
       end
 
       def add_query
-        return if options[:query].blank?
-        @lines << options[:query]
+        return if form.q.blank?
+        @lines << form.q
       end
 
       def add_title
-        return if options[:title].blank?
-        @lines << "Title: #{options[:title]}"
+        return if form.title.blank?
+        @lines << "Title: #{form.title}"
       end
 
       def add_creators
-        return if options[:creators].blank?
-        @lines << "Creator: #{options[:creators]}"
+        return if form.creators.blank?
+        @lines << "Creator: #{form.creators}"
       end
 
       def add_tags
-        tags = query.included_tag_names
-        all_tag_ids = query.filter_ids
-        unless all_tag_ids.empty?
-          tags << Tag.where(id: all_tag_ids).pluck(:name).join(", ")
+        ids = form.filter_ids
+        tags = []
+        if ids.present?
+          tags << Tag.where(id: ids).pluck(:name).join(", ")
         end
         @lines << "Tags: #{tags.uniq.join(', ')}" if tags.present?
       end
 
       def add_complete
-        if options[:complete] == "T"
+        if form.complete
           @lines << "Complete"
-        elsif options[:complete] == "F"
+        elsif !form.complete.nil?
           @lines << "Incomplete"
         end
       end
 
       def add_crossovers
-        if options[:crossover] == "T"
+        if form.crossover
           @lines << "Only Crossovers"
-        elsif options[:crossover] == "F"
+        elsif !form.crossover.nil?
           @lines << "No Crossovers"
         end
       end
 
       def add_single_chapter
-        return if options[:single_chapter].blank?
-        @lines << "Single Chapter"
+        @lines << "Single Chapter" if form.single_chapter
       end
 
       def add_language
-        return if options[:language_id].blank?
-        language = Language.find_by(short: options[:language_id])
+        return if form.language_id.blank?
+        language = Language.find_by(short: form.language_id)
         @lines << "Language: #{language.name}" if language
       end
 
       def add_countables
-        %i(word_count hits kudos_count comments_count bookmarks_count revised_at).each do |field|
-          next if options[field].blank?
-          @lines << "#{field.to_s.humanize.downcase}: #{options[field]}"
+        %i(word_count hit_count kudos_count comments_count bookmarks_count revised_at).each do |field|
+          value = form.send(field)
+          next if value.blank?
+          @lines << "#{field.to_s.humanize.downcase}: #{value}"
         end
       end
 
       def add_sorting
-        @lines += [sort_column, sort_direction].compact
+        @lines += [
+          sort_column,
+          sort_direction
+        ].compact
       end
 
       def sort_column
-        return if options[:sort_column].blank?
-        column = @search_form.name_for_sort_column(options[:sort_column])
+        return if form.sort_column.blank?
+        column = form.name_for_sort_column(form.sort_column)
         "sort by: #{column.downcase}"
       end
 
       def sort_direction
-        return if options[:sort_direction].blank?
-        options[:sort_direction] == "asc" ? "ascending" : "descending"
+        return if form.sort_direction.blank?
+        form.sort_direction == "asc" ? "ascending" : "descending"
       end
     end
   end

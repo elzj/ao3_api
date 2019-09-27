@@ -23,7 +23,8 @@ module Search
           ]
         ).merge(
           sortable_name: record.name.downcase,
-          fandoms: fandoms
+          tags: posted_tags,
+          public_tags: public_tags
           # general_bookmarks_count: general_bookmarks_count,
           # public_bookmarks_count: public_bookmarks_count,
           # general_works_count: general_works_count,
@@ -47,23 +48,16 @@ module Search
 
       # Produces an array of hashes with the format
       # [{id: 1, name: "Star Trek", count: 5}]
-      def tag_info(tag_type)
-        info = Tag.for_pseud_with_count(
-          record,
-          type: tag_type
-        ).map do |tag|
-          { id: tag.id, name: tag.name, count: tag.work_count }
+      def posted_tags
+        Tag.for_pseud_with_count(record).map do |tag|
+          tag.attributes
         end
+      end
 
-        info += Tag.for_pseud_with_count(
-          record,
-          type: tag_type,
-          unrestricted: true
-        ).map do |tag|
-          { id_for_public: tag.id, name: tag.name, count: tag.work_count }
+      def public_tags
+        Tag.for_pseud_with_count(record, unrestricted: true).map do |tag|
+          tag.attributes
         end
-
-        info
       end
 
       # The relation containing all bookmarks that should be included in the count

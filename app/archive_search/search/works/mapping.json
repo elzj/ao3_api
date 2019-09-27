@@ -1,8 +1,5 @@
 {
   "properties" : {
-    "archive_warning_ids" : {
-      "type" : "long"
-    },
     "authors_to_sort_on" : {
       "type" : "keyword"
     },
@@ -10,15 +7,6 @@
       "type" : "boolean"
     },
     "bookmarks_count" : {
-      "type" : "long"
-    },
-    "category_ids" : {
-      "type" : "long"
-    },
-    "character_ids" : {
-      "type" : "long"
-    },
-    "collection_ids" : {
       "type" : "long"
     },
     "comments_count" : {
@@ -29,9 +17,6 @@
     },
     "created_at" : {
       "type" : "date"
-    },
-    "creators" : {
-      "type" : "text"
     },
     "crossover" : {
       "type" : "boolean"
@@ -45,22 +30,13 @@
         }
       }
     },
-    "expected_number_of_chapters" : {
-      "type" : "long"
-    },
-    "fandom_ids" : {
-      "type" : "long"
-    },
     "filter_ids" : {
-      "type" : "long"
-    },
-    "freeform_ids" : {
       "type" : "long"
     },
     "hidden_by_admin" : {
       "type" : "boolean"
     },
-    "hits" : {
+    "hit_count" : {
       "type" : "long"
     },
     "id" : {
@@ -69,10 +45,10 @@
     "imported_from_url" : {
       "type" : "keyword"
     },
-    "in_anon_collection" : {
+    "anonymous" : {
       "type" : "boolean"
     },
-    "in_unrevealed_collection" : {
+    "unrevealed" : {
       "type" : "boolean"
     },
     "kudos_count" : {
@@ -108,15 +84,6 @@
     "posted" : {
       "type" : "boolean"
     },
-    "pseud_ids" : {
-      "type" : "long"
-    },
-    "rating_ids" : {
-      "type" : "long"
-    },
-    "relationship_ids" : {
-      "type" : "long"
-    },
     "restricted" : {
       "type" : "boolean"
     },
@@ -151,10 +118,6 @@
         }
       }
     },
-    "tag" : {
-      "type" : "text",
-      "analyzer" : "simple"
-    },
     "title" : {
       "type" : "text",
       "analyzer" : "simple"
@@ -164,12 +127,6 @@
     },
     "updated_at" : {
       "type" : "date"
-    },
-    "user_ids" : {
-      "type" : "long"
-    },
-    "warning_ids" : {
-      "type" : "long"
     },
     "word_count" : {
       "type" : "long"
