@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v3 do
+      resources :drafts
       resources :pseuds
       resources :tags
       resources :works

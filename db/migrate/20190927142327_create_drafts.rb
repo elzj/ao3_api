@@ -5,6 +5,8 @@ class CreateDrafts < ActiveRecord::Migration[6.0]
       t.json :metadata
       t.text :media_data
       t.boolean :marked_for_deletion, null: false, default: false
+
+      t.timestamps
     end
   end
 end

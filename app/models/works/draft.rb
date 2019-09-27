@@ -71,7 +71,8 @@ class Draft < ApplicationRecord
   ### CLASS METHODS ###
   
   def self.for_user(user)
-    where(user_id: user.id).order('updated_at DESC')
+    order(:updated_at)
+    # where(user_id: user.id).order('updated_at DESC')
   end
 
   ### INSTANCE METHODS ###
@@ -118,5 +119,10 @@ class Draft < ApplicationRecord
 
   def creators
     user ? [user.default_pseud_id].compact : []
+  end
+
+  def as_json(options = {})
+    json_data = attributes.slice("id", "user_id", "created_at", "updated_at")
+    json_data.merge(metadata)
   end
 end

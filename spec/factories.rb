@@ -40,10 +40,10 @@ FactoryBot.define do
   end
 
   factory :work do
-    title    { Faker::Lorem.words(number: 4).to_s }
-    summary  { Faker::Lorem.sentences(number: 3).to_s }
-    notes    { Faker::Lorem.sentences(number: 4).to_s }
-    endnotes { Faker::Lorem.sentences(number: 4).to_s }
+    title    { Faker::Lorem.words(number: 4).join(" ") }
+    summary  { Faker::Lorem.sentences(number: 3).join(" ") }
+    notes    { Faker::Lorem.sentences(number: 4).join(" ") }
+    endnotes { Faker::Lorem.sentences(number: 4).join(" ") }
     posted { true }
     restricted { false }
     language
@@ -51,7 +51,11 @@ FactoryBot.define do
 
   factory :chapter do
     position { 1 }
-    content { Faker::Lorem.paragraphs(number: 5).to_s }
+    content { Faker::Lorem.paragraphs(number: 5).join("\n\n") }
+  end
+
+  factory :draft do
+    title { Faker::Lorem.words(number: 4).join(" ") }
   end
 
   factory :series do
