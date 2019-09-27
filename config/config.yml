@@ -21,7 +21,7 @@ development: &default
     max_results: 100000
     prefix: 'ao3api'
     tags_per_page: 50
-    url: 'http://127.0.0.1:9200'
+    url: 'http://127.0.0.1:9400'
     work_shards: 12
   series:
     notes_max: 5000

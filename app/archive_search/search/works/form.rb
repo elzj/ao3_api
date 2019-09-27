@@ -82,10 +82,10 @@ module Search
       end
 
       def set_sorting
-        unless legal_sort_values.includes?(sort_column)
+        unless legal_sort_values.include?(sort_column)
           self.sort_column = default_sort_column
         end
-        return if sort_direction && %w(asc desc).includes?(sort_direction.downcase)
+        return if sort_direction && %w(asc desc).include?(sort_direction.downcase)
         self.sort_direction = default_sort_direction
       end
 
