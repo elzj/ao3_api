@@ -2,7 +2,7 @@
 
 class Tag < ApplicationRecord
   TAGGABLE_TYPES = %w(
-    Rating Warning Category Fandom Character Relationship Freeform
+    Rating ArchiveWarning Category Fandom Character Relationship Freeform
   ).freeze
   ALL_TYPES = TAGGABLE_TYPES + ['Media']
 
