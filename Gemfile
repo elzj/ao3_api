@@ -71,4 +71,5 @@ end
 gem 'devise', '>= 4.7.1'
 gem 'devise-jwt'
 gem 'elasticsearch', '>=7.0.0'
+gem 'sanitize'
 gem 'sidekiq'

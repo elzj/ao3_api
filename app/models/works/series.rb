@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class Series < ApplicationRecord
+  include Sanitized
+
+  sanitize_fields title:        [:html_entities],
+                  series_notes: [:html, :css],
+                  summary:      [:html]
+
   has_many :serial_works
   has_many :works, through: :serial_works
 

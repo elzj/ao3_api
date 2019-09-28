@@ -2,6 +2,8 @@
 
 # Draft work class for unposted work management
 class Draft < ApplicationRecord
+  include Sanitized
+
   belongs_to :user
 
   WORK_ATTRIBUTES = %w(
@@ -56,9 +58,12 @@ class Draft < ApplicationRecord
 
   # You can't set a database-level default for this field
   # so initialize it here to avoid nils
+  # Also, stringify passed in keys to avoid conflicts
   after_initialize do |draft|
-    draft.metadata ||= {}
+    draft.metadata = (draft.metadata || {}).stringify_keys
   end
+
+  before_validation :sanitize_metadata
 
   ### VALIDATIONS ###
 
@@ -121,8 +126,52 @@ class Draft < ApplicationRecord
     user ? [user.default_pseud_id].compact : []
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     json_data = attributes.slice("id", "user_id", "created_at", "updated_at")
     json_data.merge(metadata)
+  end
+
+  ### SANITIZE DATA ###
+
+  # This is more complicated than usual because the data is serialized
+  def sanitize_metadata
+    return unless metadata_changed?
+    sanitizers = {
+      'title'    => [:html_entities],
+      'notes'    => [:html, :css],
+      'endnotes' => [:html, :css],
+      'summary'  =>  [:html]
+    }
+    sanitizers.each do |field, sanitizers|
+      value = metadata[field]
+      next if value.blank?
+      self.metadata[field] = sanitized_value(value, sanitizers)
+    end
+    sanitize_associations
+  end
+
+  # Run our embedded associations through the sanitizer
+  def sanitize_associations
+    sanitize_association('chapters', Chapter.fields_to_sanitize)
+    sanitize_association('series', Series.fields_to_sanitize)
+  end
+
+  # For each embedded association, sanitize its fields
+  def sanitize_association(assoc, sanitizer_info)
+    current_data = self.metadata[assoc]
+    return unless current_data.is_a?(Array)
+    self.metadata[assoc] = current_data.map do |item|
+      sanitize_item(item, sanitizer_info)
+    end
+  end
+
+  def sanitize_item(item, sanitizer_info)
+    clean_item = item.dup
+    sanitizer_info.each_pair do |field, sanitizers|
+      field = field.to_s
+      value = clean_item[field]
+      clean_item[field] = sanitized_value(value, sanitizers)
+    end
+    clean_item
   end
 end

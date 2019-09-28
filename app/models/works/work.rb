@@ -3,7 +3,13 @@
 class Work < ApplicationRecord
   include Collectible
   include Creation
+  include Sanitized
   include Taggable
+
+  sanitize_fields title:    [:html_entities],
+                  notes:    [:html, :css],
+                  endnotes: [:html, :css],
+                  summary:  [:html]
 
   ### ASSOCIATIONS ###
   

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Collection < ApplicationRecord
+  include Sanitized
+
+  sanitize_fields description: [:html]
+
   ### ASSOCIATIONS ###
 
   belongs_to :parent,

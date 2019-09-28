@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Profile < ApplicationRecord
+  include Sanitized
+
+  sanitize_fields about_me: [:html]
+
   ### ASSOCIATIONS
   belongs_to :user
   
