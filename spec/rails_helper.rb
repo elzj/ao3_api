@@ -70,6 +70,7 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
+  config.include Shoulda::Callback::Matchers::ActiveModel
   config.include FactoryBot::Syntax::Methods
   config.include SearchSpecHelper
   config.include AuthHelper, type: :request
