@@ -19,6 +19,10 @@ FactoryBot.define do
     password { "password" }
     password_confirmation { |u| u.password }
     email { generate(:email) }
+
+    factory :confirmed_user do
+      confirmed_at { Time.now }
+    end
   end
 
   factory :pseud do

@@ -4,16 +4,16 @@ module Api
   module V3
     # JSON API for drafts
     class DraftsController < Api::V3::BaseController
-      respond_to :json
+      before_action :authenticate_user!
 
       def index
         @drafts = Draft.for_user(current_user).map(&:as_json)
-        respond_with @drafts.to_json
+        render json: @drafts.to_json
       end
 
       def show
         @draft = Draft.for_user(current_user).find(params[:id])
-        respond_with @draft.as_json.to_json
+        render json: @draft.as_json.to_json
       end
 
       def create

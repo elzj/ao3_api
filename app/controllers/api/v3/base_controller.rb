@@ -6,10 +6,7 @@ module Api
   # with the new version.
   module V3
     class BaseController < ActionController::Base
-      # obviously delete later
-      def current_user
-        User.first
-      end
+      skip_before_action :verify_authenticity_token
     end
   end
 end

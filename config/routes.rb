@@ -15,6 +15,15 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v3 do
+      devise_for :users,
+                 controllers: {
+                   sessions: 'api/v3/users/sessions',
+                   registrations: 'api/v3/users/registrations'
+                 },
+                 path_names: {
+                   sign_in: 'login',
+                   sign_out: 'logout'
+                 }
       resources :drafts
       resources :pseuds
       resources :tags

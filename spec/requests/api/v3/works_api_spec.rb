@@ -29,9 +29,13 @@ describe "Works API", type: :request, work_search: :true do
   end
 
   describe "#create" do
+    let!(:user) { create(:confirmed_user) }
+    let(:auth_header) do
+      { 'Authorization' => authenticate(user) }
+    end
+
     it "creates a new work" do
       language = create(:language)
-      create(:user)
 
       attributes = {
         title: "A new work",
@@ -44,7 +48,7 @@ describe "Works API", type: :request, work_search: :true do
         language_id: language.id
       }
 
-      post "/api/v3/works.json", params: { work: attributes }
+      post "/api/v3/works.json", params: { work: attributes }, headers: auth_header
       expect(response).to have_http_status(:created)
       data = JSON.parse(response.body)
       expect(data.keys).to include("id")

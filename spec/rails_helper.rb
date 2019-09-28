@@ -72,4 +72,5 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
   config.include SearchSpecHelper
+  config.include AuthHelper, type: :request
 end

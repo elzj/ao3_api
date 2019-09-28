@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 class Api::V3::WorksController < Api::V3::BaseController
-  respond_to :json
+  before_action :authenticate_user!, only: [:create]
 
   def index
     @works = Search::Works::Form.new(query_params).search_results
-    respond_with @works.to_json
+    render json: @works.to_json
   end
 
   def show
     @work = Search::Works::Document.new(
       Work.find(params[:id])
     )
-    respond_with @work.to_json
+    render json: @work.to_json
   end
 
   def create

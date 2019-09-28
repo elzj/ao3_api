@@ -8,7 +8,9 @@ class User < ApplicationRecord
          :trackable,
          :validatable,
          :lockable,
-         :recoverable
+         :recoverable,
+         :jwt_authenticatable,
+         jwt_revocation_strategy: JwtBlacklist
 
   ### ASSOCIATIONS
 
