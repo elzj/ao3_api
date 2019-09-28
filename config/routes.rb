@@ -13,7 +13,7 @@ Rails.application.routes.draw do
                sign_out: 'logout'
              }
 
-  namespace :api do
+  namespace :api, defaults: { format: :json } do
     namespace :v3 do
       resources :drafts
       resources :pseuds
