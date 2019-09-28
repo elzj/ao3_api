@@ -2,10 +2,11 @@
 
 module Search
   module Pseuds
+    # Creates an indexable hash of pseud data
     class Document
-      WHITELISTED_ATTRIBUTES = %w[
+      WHITELISTED_ATTRIBUTES = %w(
         id name user_id description created_at
-      ].freeze
+      ).freeze
 
       attr_reader :record
 
@@ -13,7 +14,7 @@ module Search
         @record = record
       end
 
-      def as_json
+      def as_json(options = {})
         record.as_json(
           root: false,
           only: WHITELISTED_ATTRIBUTES,
@@ -49,33 +50,29 @@ module Search
       # Produces an array of hashes with the format
       # [{id: 1, name: "Star Trek", count: 5}]
       def posted_tags
-        Tag.for_pseud_with_count(record).map do |tag|
-          tag.attributes
-        end
+        Tag.for_pseud_with_count(record).map(&:attributes)
       end
 
       def public_tags
-        Tag.for_pseud_with_count(record, unrestricted: true).map do |tag|
-          tag.attributes
-        end
+        Tag.for_pseud_with_count(record, unrestricted: true).map(&:attributes)
       end
 
       # The relation containing all bookmarks that should be included in the count
       # for logged-in users (when restricted to a particular pseud).
       def general_bookmarks
         @general_bookmarks ||=
-          Bookmark.with_missing_bookmarkable.
-          or(Bookmark.with_bookmarkable_visible_to_registered_user).
-          is_public
+          Bookmark.with_missing_bookmarkable.or(
+            Bookmark.with_bookmarkable_visible_to_registered_user
+          ).is_public
       end
 
       # The relation containing all bookmarks that should be included in the count
       # for logged-out users (when restricted to a particular pseud).
       def public_bookmarks
         @public_bookmarks ||=
-          Bookmark.with_missing_bookmarkable.
-          or(Bookmark.with_bookmarkable_visible_to_all).
-          is_public
+          Bookmark.with_missing_bookmarkable.or(
+            Bookmark.with_bookmarkable_visible_to_all
+          ).is_public
       end
 
       def general_bookmarks_count

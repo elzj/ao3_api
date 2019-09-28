@@ -32,7 +32,11 @@ module Api
 
       def draft_params
         params.require(:draft).permit(
-          *Draft::FIELDS
+          *Draft::FIELDS + [{
+            chapters: [
+              :content, :title, :notes, :endnotes, :summary, :position
+            ]
+          }]
         ).merge(user_id: current_user&.id)
       end
     end

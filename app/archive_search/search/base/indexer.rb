@@ -99,9 +99,7 @@ module Search
         records.each_pair do |id, record|
           if record.present?
             # Makes it easier to use group_by
-            if record.is_a?(Array)
-              record = record.first
-            end
+            record = record.first if record.is_a?(Array)
             @batch << { index: routing_info(id) }
             @batch << document(record)
           else

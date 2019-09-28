@@ -24,16 +24,6 @@ RSpec.describe Tag, type: :model do
     end
   end
 
-  describe ".find_sti_class" do
-    it "maps legacy Warning type to class" do
-      expect(Tag.find_sti_class("Warning")).to eq(ArchiveWarning)
-    end
-    it "returns usual result for other tags" do
-      expect(Tag.find_sti_class("Category")).to eq(Category)
-      expect(Tag.find_sti_class("Freeform")).to eq(Freeform)
-    end
-  end
-
   ### INSTANCE METHODS ###
 
   describe "#has_posted_works?" do

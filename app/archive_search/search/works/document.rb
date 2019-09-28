@@ -2,7 +2,7 @@
 
 module Search
   module Works
-    # Create a json document based on a work object
+    # Creates an indexable hash of work data
     class Document
       WHITELISTED_ATTRIBUTES = %w(
         id backdate complete created_at end_notes hidden_by_admin
@@ -17,9 +17,8 @@ module Search
         @record = record
       end
 
-      def as_json
+      def as_json(options = {})
         record.as_json(
-          root: false,
           only: WHITELISTED_ATTRIBUTES
         ).merge(
           collection_data,

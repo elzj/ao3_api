@@ -2,6 +2,7 @@
 
 module Search
   module Bookmarks
+    # Creates an indexable hash of bookmark data
     class Document < Search::Base::Document
     end
   end

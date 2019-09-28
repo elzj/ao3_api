@@ -29,7 +29,7 @@ class Draft < ApplicationRecord
   ).freeze
 
   FIELDS = WORK_ATTRIBUTES + TAG_FIELDS + %w(
-    chapter
+    chapters
     series
     collections
     cocreators
@@ -108,7 +108,7 @@ class Draft < ApplicationRecord
   end
 
   def chapter_data
-    metadata['chapter']
+    metadata['chapters']
   end
 
   def tag_data

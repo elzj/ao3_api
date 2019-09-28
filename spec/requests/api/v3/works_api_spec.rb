@@ -27,4 +27,32 @@ describe "Works API", type: :request, work_search: :true do
       expect(titles).not_to include("The Hobbit")
     end
   end
+
+  describe "#create" do
+    it "creates a new work" do
+      language = create(:language)
+      create(:user)
+
+      attributes = {
+        title: "A new work",
+        chapters: [
+          { content: "With plenty of content" }
+        ],
+        fandoms: "Amazing Fandom",
+        ratings: "Not Rated",
+        archive_warnings: "No Archive Warnings Apply",
+        language_id: language.id
+      }
+
+      post "/api/v3/works.json", params: { work: attributes }
+      expect(response).to have_http_status(:created)
+      data = JSON.parse(response.body)
+      expect(data.keys).to include("id")
+
+      get "/api/v3/works/#{data['id']}.json"
+      data = JSON.parse(response.body)
+      expect(data.keys).to include("title")
+      expect(data["title"]).to eq("A new work")
+    end
+  end
 end

@@ -2,10 +2,11 @@
 
 module Search
   module Tags
+    # Creates an indexable hash of tag data
     class Document
-      WHITELISTED_ATTRIBUTES = %w[
+      WHITELISTED_ATTRIBUTES = %w(
         id canonical created_at merger_id name sortable_name unwrangleable
-      ].freeze
+      ).freeze
 
       attr_reader :record
 
@@ -13,7 +14,7 @@ module Search
         @record = record
       end
 
-      def as_json
+      def as_json(options = {})
         record.as_json(
           root: false,
           only: WHITELISTED_ATTRIBUTES,

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe "Drafts API", type: :request do
-  let(:user) { create(:user) }
+  let!(:user) { create(:user) }
 
   describe "#index" do
     let!(:draft) { create(:draft, user_id: user.id) }

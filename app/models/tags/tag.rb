@@ -6,6 +6,7 @@ class Tag < ApplicationRecord
   ).freeze
   ALL_TYPES = TAGGABLE_TYPES + ['Media']
 
+  include Autocompleted
   include StringCleaner
 
   ### ASSOCIATIONS
@@ -73,25 +74,19 @@ class Tag < ApplicationRecord
   before_validation :squish_name
   before_validation :set_sortable_name
 
-  ### CLASS METHODS
+  ### CLASS METHODS ###
 
+  ## GENERAL UTILITIES ##
+
+  ## FINDERS ##
+
+  # Find tags by type
   def self.by_type(tag_type)
     where(type: tag_type)
   end
 
-  # Workaround for warning class with existing data
-  def self.find_sti_class(type_name)
-    if type_name == 'Warning'
-      ArchiveWarning
-    else
-      super
-    end
-  end
-
-  def self.with_direct_filtered_works
-    joins(:filtered_works).where(filter_taggings: { inherited: false })
-  end
-
+  # Given a pseud, find tags (as filters) used on its works
+  # with the count as a virtual attribute
   def self.for_pseud_with_count(pseud, type: nil, unrestricted: nil)
     select_list = "tags.id, tags.name, tags.type, COUNT('tags.id') AS count"
     query = with_direct_filtered_works.
@@ -107,6 +102,46 @@ class Tag < ApplicationRecord
     query = query.where(type: type) if type
     query = query.merge(Work.unrestricted) if unrestricted
     query.group(:id)
+  end
+
+  # Includes direct filtered works in a relation
+  def self.with_direct_filtered_works
+    joins(:filtered_works).where(filter_taggings: { inherited: false })
+  end
+
+  ## ACTION METHODS ##
+
+  # Given a type and a list of names, find or create the tags
+  # and return as an array
+  def self.create_multiple(tag_type, names)
+    raise "Invalid tag type" unless ALL_TYPES.include?(tag_type)
+
+    names.map do |name|
+      Tag.where(type: tag_type, name: name).first_or_create
+    end
+  end
+
+  # Given a type and a comma-separated list of tag names, find or create them
+  # It's important to return the list in the original order
+  def self.process_tag_list(tag_type, tag_string)
+    names = words_from_list(tag_string)
+
+    # Using the original array keeps things in order
+    tags = tags_for_names(tag_type, names).group_by(&:name)
+    names.flat_map { |name| tags[name] }.uniq.compact
+  end
+
+  # Finds or creates tags by name for a given type
+  # Needs to handle the situation where a tag with a certain name
+  # exists as a different type
+  def self.tags_for_names(tag_type, names)
+    found = Tag.where(name: names)
+    tags, wrong_type = found.partition { |tag| tag.type == type }
+
+    new_tags = names - tags.map(&:name)
+    new_tags += wrong_type.map { |tag| "#{tag.name} - #{tag_type}" }
+
+    tags + create_multiple(tag_type, new_tags)
   end
 
   ### INSTANCE METHODS

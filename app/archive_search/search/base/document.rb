@@ -11,8 +11,8 @@ module Search
       end
 
       # Customize this to include or exclude the appropriate data
-      def as_json
-        record.as_json(root: false)
+      def as_json(options = {})
+        record.as_json(options)
       end
     end
   end

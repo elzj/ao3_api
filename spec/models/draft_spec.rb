@@ -19,15 +19,15 @@ RSpec.describe Draft, type: :model do
 
   describe '#work_data' do
     it "should include only work fields" do
-      draft = Draft.new(title: "One", chapter: { content: "Two" })
+      draft = Draft.new(title: "One", chapters: [{ content: "Two" }])
       expect(draft.work_data).to eq('title' => 'One')
     end
   end
 
   describe '#chapter_data' do
     it "should include only chapter fields" do
-      draft = Draft.new(title: "One", chapter: { 'content' => "Two" })
-      expect(draft.chapter_data).to eq('content' => 'Two')
+      draft = Draft.new(title: "One", chapters: [{ 'content' => "Two" }])
+      expect(draft.chapter_data).to eq([{ 'content' => 'Two' }])
     end    
   end
 
