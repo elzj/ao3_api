@@ -5,8 +5,8 @@ module Search
         "ExternalWork"
       end
 
-      def document(object)
-        ExternalWorkDocument.new(object).to_hash
+      def document_class
+        ExternalWorkDocument
       end
     end
   end

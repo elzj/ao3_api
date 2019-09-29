@@ -43,6 +43,8 @@ module Search
         sanitize_dates
         sanitize_booleans
 
+        set_sorting
+
         @processed = true
       end
 
@@ -77,6 +79,26 @@ module Search
         return if value.nil?
         sanitized = Search::Sanitizer.send(sanitize_method, value)
         send("#{field}=", sanitized)
+      end
+
+      def set_sorting
+        unless legal_sort_values.include?(sort_column)
+          self.sort_column = default_sort_column
+        end
+        return if sort_direction && %w(asc desc).include?(sort_direction.downcase)
+        self.sort_direction = default_sort_direction
+      end
+
+      def legal_sort_values
+        %w(_score)
+      end
+
+      def default_sort_column
+        '_score'
+      end
+
+      def default_sort_direction
+        'desc'
       end
 
       # Set these values in subclasses to run the sanitizer

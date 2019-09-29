@@ -4,64 +4,71 @@ module Search
   module Bookmarks
     # Creates an indexable hash of bookmark data
     class Document < Search::Base::Document
+      include Search::Shared::CollectibleDocument
+      include Search::Shared::TaggableDocument
+
+      WHITELISTED_ATTRIBUTES = %i(
+        id bookmarkable_type bookmarkable_id
+        hidden_by_admin private rec
+        created_at updated_at
+      ).freeze
+
+      attr_reader :record
+
+      def initialize(record)
+        @record = record
+      end
+
+      def as_json(options = {})
+        record.as_json(
+          only: WHITELISTED_ATTRIBUTES,
+          methods: [:bookmarkable_date]
+        ).merge(
+          notes: record.bookmarker_notes,
+          with_notes: record.bookmarker_notes.present?
+        ).merge(
+          bookmarker_data,
+          collection_data,
+          tag_data,
+          bookmarkable_join
+        ).merge(options).with_indifferent_access
+      end
+
+      def bookmarker_data
+        pseud = record.pseud
+        {
+          bookmarker: {
+            id: pseud.id,
+            name: pseud.name,
+            user_id: pseud.user_id,
+            user_login: pseud.user_login
+          }
+        }
+      end
+
+      def bookmarkable_join
+        return {} if parent_deleted?
+        {
+          bookmarkable_join: {
+            name: "bookmark",
+            parent: parent_id
+          }
+        }
+      end
+
+      def parent_deleted?
+        record.bookmarkable.nil?
+      end
+
+      # We store bookmarks and bookmarkables in the same index
+      # so we need to avoid id collision by disambiguating
+      # Example: '5-work', '33-external_work'
+      def parent_id
+        [
+          record.bookmarkable_id,
+          record.bookmarkable_type.underscore
+        ].join("-")
+      end
     end
   end
 end
-
-# module Bookmarks
-#   class Document < SimpleDelegator
-
-#     WHITELISTED_FIELDS = [
-#       :id, :created_at, :bookmarkable_type, :bookmarkable_id, :user_id,
-#       :notes, :private, :updated_at, :hidden_by_admin, :pseud_id, :rec
-#     ]
-
-#     INCLUDED_METHODS = [
-#       :bookmarker, :collection_ids, :with_notes, :bookmarkable_date
-#     ]
-
-#     def as_json(options = nil)
-#       bookmark.as_json(
-#         root:     false,
-#         only:     WHITELISTED_FIELDS,
-#         methods:  INCLUDED_METHODS
-#       ).merge(
-#         user_id:  user_id,
-#         tag:      tag_names,
-#         tag_ids:  tags_ids
-#       ).merge(bookmarkable)
-#     end
-
-#     def bookmark
-#       __getobj__
-#     end
-
-#     def bookmarkable
-#       if parent_id.match("deleted")
-#         {}
-#       else
-#         {
-#           bookmarkable_join: {
-#             name: "bookmark",
-#             parent: parent_id
-#           }
-#         }
-#       end
-#     end
-
-#     def parent_id
-#       if bookmark.nil?
-#         deleted_parent_info
-#       else
-#         [
-#           bookmark.bookmarkable_id,
-#           bookmark.bookmarkable_type.underscore
-#         ].join("-")
-#       end
-#     end
-
-#     def deleted_parent_info
-#       REDIS_GENERAL.get("deleted_bookmark_parent_#{bookmark.id}")
-#     end
-#   end
-# end

@@ -55,4 +55,9 @@ class User < ApplicationRecord
   def current_preferences
     preference || Preference.create_default(self)
   end
+
+  # Does this user have a pseud with this id?
+  def pseud_with_id?(pseud_id)
+    pseuds.where(id: pseud_id).exists?
+  end
 end

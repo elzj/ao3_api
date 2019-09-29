@@ -24,6 +24,7 @@ Rails.application.routes.draw do
                    sign_in: 'login',
                    sign_out: 'logout'
                  }
+      resources :bookmarks
       resources :drafts
       resources :pseuds
       resources :tags

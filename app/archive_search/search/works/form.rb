@@ -4,6 +4,8 @@ module Search
   module Works
     # Form interface for work searches    
     class Form < Search::Base::Form
+      include Search::Shared::TaggableForm
+
       TAG_FIELDS = %i(
         archive_warning_ids category_ids rating_ids
         character_names character_ids
@@ -81,14 +83,6 @@ module Search
         %i(complete crossover single_chapter)
       end
 
-      def set_sorting
-        unless legal_sort_values.include?(sort_column)
-          self.sort_column = default_sort_column
-        end
-        return if sort_direction && %w(asc desc).include?(sort_direction.downcase)
-        self.sort_direction = default_sort_direction
-      end
-
       def clean_up_angle_brackets
         %i(word_count hit_count kudos_count comments_count bookmarks_count revised_at query_string).each do |field|
           value = send(field)
@@ -111,46 +105,6 @@ module Search
         return unless field.present?
         value = send(field) || []
         send("#{field}=", value + [owner.id])
-      end
-
-      def load_tags
-        ids = Tag::TAGGABLE_TYPES.flat_map do |tag_type|
-          send("#{tag_type.underscore}_ids")
-        end
-        self.filter_ids = (
-          [self.filter_ids] + ids + processed_tag_name_ids
-        ).flatten.compact.uniq
-        process_exclusions
-      end
-
-      def processed_tag_name_ids
-        names = parse_tag_names
-        tags = Tag.where(name: names).pluck(:id, :name)
-        # Use our non-user-facing field to hold the missing
-        self.tag_names = names - tags.map(&:last)
-        tags.map(&:first)
-      end
-
-      def parse_tag_names
-        tag_name_fields = %w(
-          fandom_names character_names relationship_names
-          freeform_names tag_names
-        )
-        tag_name_fields.flat_map do |field|
-          value = send(field)
-          next if value.blank?
-          value.split(',').map(&:squish).reject(&:blank?)
-        end.uniq.compact
-      end
-
-      def process_exclusions
-        value = self.excluded_tag_names
-        return unless value
-        names = value.split(',').map(&:squish).reject(&:blank?)
-        return if names.blank?
-        ids = Tag.where(name: names).pluck(:id)
-        self.excluded_tag_ids ||= []
-        self.excluded_tag_ids << ids
       end
 
       def summary

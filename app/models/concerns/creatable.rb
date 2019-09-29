@@ -2,7 +2,7 @@
 
 # Shared code for classes which act as creations
 # currently: chapters, series, and works
-module Creation
+module Creatable
   extend ActiveSupport::Concern
 
   included do

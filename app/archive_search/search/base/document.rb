@@ -4,6 +4,8 @@ module Search
   module Base
     # Creates an indexable hash for a particular class of object
     class Document
+      WHITELISTED_ATTRIBUTES = [].freeze
+
       attr_reader :record
 
       def initialize(record)
@@ -12,7 +14,9 @@ module Search
 
       # Customize this to include or exclude the appropriate data
       def as_json(options = {})
-        record.as_json(options)
+        record.as_json(
+          only: WHITELISTED_ATTRIBUTES
+        ).merge(options)
       end
     end
   end

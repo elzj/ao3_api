@@ -4,6 +4,8 @@ module Search
   module Works
     # Query builder for work searches
     class Query < Search::Base::Query
+      include Search::Shared::TaggableQuery
+
       def klass
         'Work'
       end
@@ -18,7 +20,7 @@ module Search
 
       # Boolean, id, number, and date filters
       def filters
-        [
+        @filters = [
           term_filters,
           terms_filters,
           range_filters
@@ -27,7 +29,7 @@ module Search
 
       # The text-based options the results must match
       def musts
-        [
+        @musts = [
           general_query,
           title_query,
           creators_query,
@@ -39,7 +41,7 @@ module Search
 
       # Results to exclude
       def must_nots
-        [
+        @must_nots = [
           tag_exclusions,
           tag_name_exclusion_queries
         ].flatten.compact
@@ -85,14 +87,6 @@ module Search
         end
       end
 
-      # Returns an array of term filters for tag ids
-      def tag_filters
-        return [] if options[:filter_ids].blank?
-        options[:filter_ids].map do |filter_id|
-          term_filter(:filter_ids, filter_id)
-        end
-      end
-
       # Terms filters that match arrays of values
       def terms_filters
         [
@@ -119,38 +113,6 @@ module Search
       def collection_filter
         return if options[:collection_ids].blank?
         terms_filter("collections.id", options[:collection_ids])
-      end
-
-      # Combine remaining tag names and add a query for them
-      def tag_name_query
-        return if options[:tag_names].blank?
-        multi_match_query(
-          tag_name_fields,
-          options[:tag_names].join(" ")
-        )
-      end
-
-      # Returns an array of tag term filters to exclude
-      def tag_exclusions
-        return [] if options[:excluded_tag_ids].blank?
-        options[:excluded_tag_ids].map do |exclusion_id|
-          term_filter(:filter_ids, exclusion_id)
-        end
-      end
-
-      # Returns an array of match filters for excluded tag names
-      def tag_name_exclusion_queries
-        return [] if options[:excluded_tag_names].blank?
-        options[:excluded_tag_names].map do |tag_name|
-          multi_match_query(tag_name_fields, tag_name)
-        end
-      end
-
-      # The various index fields where tag names abide
-      def tag_name_fields
-        Tag::TAGGABLE_TYPES.map do |tag_type|
-          "#{tag_type.humanize.pluralize}.name"
-        end + ["tags.name", "meta_tags.name"]
       end
 
       # Takes user input for number and date fields
@@ -231,16 +193,6 @@ module Search
 
       def collection_aggregation
         terms_aggregation(:collections, :collection_ids) if collected?
-      end
-
-      def tag_aggregations
-        return unless filtered?
-        Tag::TAGGABLE_TYPES.inject({}) do |aggs, tag_type|
-          label = tag_type.underscore
-          aggs.merge!(
-            terms_aggregation(label, "#{label}_ids")
-          )
-        end
       end
 
       ####################

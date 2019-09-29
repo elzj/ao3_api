@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Series < ApplicationRecord
+  include Bookmarkable
+  include Creatable
   include Sanitized
 
   sanitize_fields title:        [:html_entities],

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class Work < ApplicationRecord
+  include Bookmarkable
   include Collectible
-  include Creation
+  include Creatable
   include Sanitized
   include Taggable
 
@@ -63,4 +64,7 @@ class Work < ApplicationRecord
   def clean_title
     self.title = (title || '').strip
   end
+
+  alias_attribute :anonymous?, :in_anon_collection
+  alias_attribute :unrevealed?, :in_unrevealed_collection
 end

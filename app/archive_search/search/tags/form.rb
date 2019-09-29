@@ -4,7 +4,10 @@ module Search
   module Tags
     # Form interface for tag searches
     class Form < Search::Base::Form
-      ATTRIBUTES = %w(q name tag_type canonical current_user).freeze
+      ATTRIBUTES = %w(
+        q name tag_type canonical
+        current_user sort_column sort_direction
+      ).freeze
 
       attr_accessor(*ATTRIBUTES)
 

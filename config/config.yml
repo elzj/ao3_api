@@ -1,4 +1,6 @@
 development: &default
+  bookmarks:
+    notes_max: 5000
   chapters:
     content_min: 10
     content_max: 510000

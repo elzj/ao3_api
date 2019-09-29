@@ -7,6 +7,7 @@ module Search
       ATTRIBUTES = %i(
         q name current_user
         collection_ids fandom tag_ids
+        sort_column sort_direction
       ).freeze
       attr_accessor(*ATTRIBUTES)
 

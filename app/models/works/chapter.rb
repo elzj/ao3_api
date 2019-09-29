@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Chapter < ApplicationRecord
+  include Creatable
   include Sanitized
 
   sanitize_fields title:    [:html_entities],
@@ -10,8 +11,6 @@ class Chapter < ApplicationRecord
                   content:  [:html, :css, :multimedia]
 
   ### ASSOCIATIONS
-  has_many :creatorships, as: :creation
-  has_many :pseuds, through: :creatorships
   belongs_to :work  
 
   ### VALIDATIONS

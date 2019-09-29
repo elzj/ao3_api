@@ -66,6 +66,11 @@ FactoryBot.define do
     title { Faker::Lorem.words(number: 6).to_s }
   end
 
+  factory :bookmark do
+    association :bookmarkable, factory: :work
+    pseud
+  end
+
   factory :collection do
     name { Faker::Lorem.characters(number: 8).to_s }
     title { Faker::Lorem.characters(number: 8).to_s }

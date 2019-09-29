@@ -5,8 +5,8 @@ module Search
         "Series"
       end
 
-      def document(object)
-        SeriesDocument.new(object).to_hash
+      def document_class
+        SeriesDocument
       end
     end
   end

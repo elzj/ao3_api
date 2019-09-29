@@ -111,13 +111,14 @@ module Search
 
       # Synchronously index an object
       def index_document(object)
+        document = document_class.new(object)
         info = {
           index:  index_name,
           id:     document_id(object.id),
-          body:   document(object)
+          body:   document.as_json
         }
-        if respond_to?(:parent_id)
-          info[:routing] = parent_id(object.id, object)
+        if document.respond_to?(:parent_id)
+          info[:routing] = document.parent_id
         end
         client.index(info)
       end
