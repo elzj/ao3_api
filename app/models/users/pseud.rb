@@ -5,6 +5,9 @@ class Pseud < ApplicationRecord
 
   sanitize_fields description: [:html]
 
+  searchkick mappings: Search::PseudSearch.mappings,
+             settings: Search::PseudSearch.settings
+
   ### ASSOCIATIONS
 
   belongs_to :user
@@ -53,7 +56,11 @@ class Pseud < ApplicationRecord
   delegate :login, to: :user, prefix: true, allow_nil: true
   
   def byline
-    login = self.respond_to?(:user_name) ? user_name : user.login
+    login = self.respond_to?(:user_name) ? user_name : user_login
     name == login ? name : "#{name} (#{login})"
+  end
+
+  def search_data
+    Search::PseudSearch.document(self)
   end
 end

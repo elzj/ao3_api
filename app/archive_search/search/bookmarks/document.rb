@@ -3,7 +3,7 @@
 module Search
   module Bookmarks
     # Creates an indexable hash of bookmark data
-    class Document < Search::Base::Document
+    class Document
       include Search::Shared::CollectibleDocument
       include Search::Shared::TaggableDocument
 

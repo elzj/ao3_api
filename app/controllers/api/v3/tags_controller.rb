@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
 class Api::V3::TagsController < Api::V3::BaseController
-  respond_to :json
-
   def index
-    tags = Search::Tags::Form.new(query_params).search_results
-    respond_with tags.to_json
+    tags = Search::TagSearch.new(query_params).search_results
+    render json: tags.to_json
   end
 
   def show
-    @tag = Tag.find params[:id]
-    respond_with @tag.as_json
+    @tag = Search::TagSearch.document(Tag.find(params[:id]))
+    render json: @tag.as_json
   end
 
   protected

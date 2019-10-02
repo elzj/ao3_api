@@ -61,15 +61,17 @@ group :development, :test do
 end
 
 group :test do
-  gem 'faker'
   gem 'factory_bot_rails'
-  gem 'shoulda-matchers'
+  gem 'faker'
   gem 'shoulda-callback-matchers'
+  gem 'shoulda-matchers'
   gem 'simplecov', require: false
 end
 
 gem 'devise', '>= 4.7.1'
 gem 'devise-jwt'
 gem 'elasticsearch', '>=7.0.0'
+gem 'elasticsearch-dsl'
 gem 'sanitize'
+gem 'searchkick'
 gem 'sidekiq'

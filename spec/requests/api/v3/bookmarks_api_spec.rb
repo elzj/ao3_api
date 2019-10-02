@@ -2,18 +2,11 @@
 
 require 'rails_helper'
 
-def reindex_work(work)
-  index_and_refresh(
-    Search::Bookmarks::WorkIndexer, [work]
-  )
-end
-
 describe "Bookmarks API", type: :request, bookmark_search: :true do
-  let(:indexer) { Search::Bookmarks::Indexer }
   let(:language) { create(:language) }
 
   describe "#index" do
-    let(:hobbit) do
+    let!(:hobbit) do
       create(
         :work,
         title: "The Hobbit",
@@ -21,7 +14,7 @@ describe "Bookmarks API", type: :request, bookmark_search: :true do
         language_id: language.id
       )
     end
-    let(:bookmark) do
+    let!(:bookmark) do
       create(
         :bookmark,
         bookmarkable: hobbit,
@@ -31,14 +24,12 @@ describe "Bookmarks API", type: :request, bookmark_search: :true do
     end
 
     before(:each) do
-      Search::Bookmarks::Index.new.prepare_for_testing
-      reindex_work(hobbit)
       not_found = create(
         :bookmark,
         bookmarker_notes: "hated it",
         bookmarkable: build_stubbed(:work)
       )
-      index_and_refresh(indexer, [bookmark, not_found])
+      Bookmark.search_index.refresh
     end
 
     it "returns basic search results" do
@@ -54,9 +45,10 @@ describe "Bookmarks API", type: :request, bookmark_search: :true do
       tag = Freeform.create(name: "dragons", canonical: true)
       hobbit.taggings.create(tagger_id: tag.id)
       hobbit.filter_taggings.create(filter_id: tag.id)
-      reindex_work(hobbit)
+      hobbit.save
+      Bookmark.search_index.refresh
 
-      params = { query: { freeform_ids: tag.id } }
+      params = { query: { filter_ids: [tag.id] } }
       get "/api/v3/bookmarks.json", params: params
       bookmarks = JSON.parse(response.body)
 

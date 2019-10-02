@@ -7,6 +7,8 @@ module Bookmarkable
 
   included do
     has_many :bookmarks, as: :bookmarkable
+
+    after_commit :reindex_as_bookmarkable
   end
 
   class_methods do
@@ -14,6 +16,10 @@ module Bookmarkable
 
   def public_bookmark_count
     bookmarks.where(private: false).count
+  end
+
+  def reindex_as_bookmarkable
+    Search::Bookmarks::ParentIndexer.reindex(self)
   end
 
   def sortable_date

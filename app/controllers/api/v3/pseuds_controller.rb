@@ -4,14 +4,12 @@ class Api::V3::PseudsController < Api::V3::BaseController
   respond_to :json
 
   def index
-    @pseuds = Search::Pseuds::Form.new(query_params).search_results
+    @pseuds = Search::PseudSearch.new(query_params).search_results
     respond_with @pseuds.to_json
   end
 
   def show
-    @pseud = Search::Pseuds::Document.new(
-      Pseud.find(params[:id])
-    )
+    @pseud = Search::PseudSearch.document(Pseud.find(params[:id]))
     respond_with @pseud.to_json
   end
 
@@ -19,7 +17,7 @@ class Api::V3::PseudsController < Api::V3::BaseController
 
   def query_params
     params.require(:query).permit(
-      :q, :name, :fandom, :collection_ids
+      :q, :name, :fandom, :tag_ids, :collection_ids
     ).merge(current_user: current_user)
   end
 end

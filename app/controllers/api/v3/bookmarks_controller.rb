@@ -4,12 +4,13 @@ class Api::V3::BookmarksController < Api::V3::BaseController
   before_action :authenticate_user!, only: [:create]
 
   def index
-    @bookmarks = Search::Bookmarks::Form.new(query_params).search_results
+    @bookmarks = Search::BookmarkSearch.new(query_params)
+                                       .search_results(load: false)
     render json: @bookmarks.to_json
   end
 
   def show
-    @bookmark = Search::Bookmarks::Document.new(
+    @bookmark = Search::BookmarkSearch.document(
       Bookmark.visible_to(current_user).find(params[:id])
     )
     render json: @bookmark.to_json
@@ -28,7 +29,7 @@ class Api::V3::BookmarksController < Api::V3::BaseController
 
   def query_params
     params.require(:query).permit(
-      Search::Bookmarks::Form.permitted_params
+      Search::BookmarkSearch.permitted_params
     ).merge(current_user: current_user)
   end
 

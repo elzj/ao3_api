@@ -8,6 +8,10 @@ class Bookmark < ApplicationRecord
 
   sanitize_fields bookmarker_notes: [:html]
 
+  searchkick mappings: Search::BookmarkSearch.mappings,
+             settings: Search::BookmarkSearch.settings,
+             routing: true
+
   belongs_to :bookmarkable, polymorphic: true
   belongs_to :pseud
 
@@ -34,6 +38,14 @@ class Bookmark < ApplicationRecord
   def save_for_user(user)
     validate_ownership(user) &&
       assign_to_user(user) && save
+  end
+
+  def search_data
+    Search::BookmarkSearch.document(self)
+  end
+
+  def search_routing
+    "#{bookmarkable_id}-#{bookmarkable_type.underscore}"
   end
 
   # Prevent creation of bookmarks under other users' accounts

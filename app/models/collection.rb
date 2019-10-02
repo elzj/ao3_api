@@ -5,6 +5,8 @@ class Collection < ApplicationRecord
 
   sanitize_fields description: [:html]
 
+  searchkick
+
   ### ASSOCIATIONS ###
 
   belongs_to :parent,

@@ -12,36 +12,41 @@ module Search
         options[:tag_names]
       end
 
-      # Returns an array of term filters for tag ids
-      def tag_filters
-        return [] if options[:filter_ids].blank?
-        options[:filter_ids].map do |filter_id|
-          term_filter(:filter_ids, filter_id)
+      # Adds term filters for tag ids
+      def add_tag_filters
+        return if options[:filter_ids].blank?
+        options[:filter_ids].each do |filter_id|
+          body.filter(:term, filter_ids: filter_id)
         end
       end
 
       # Combine remaining tag names and add a query for them
-      def tag_name_query
+      def add_tag_name_query
         return if options[:tag_names].blank?
-        multi_match_query(
-          tag_name_fields,
-          options[:tag_names].join(" ")
+        body.must(
+          :multi_match,
+          field: tag_name_fields,
+          query: options[:tag_names].join(" ")
         )
       end
 
       # Returns an array of tag term filters to exclude
-      def tag_exclusions
-        return [] if options[:excluded_tag_ids].blank?
-        options[:excluded_tag_ids].map do |exclusion_id|
-          term_filter(:filter_ids, exclusion_id)
+      def add_tag_exclusions
+        return if options[:excluded_tag_ids].blank?
+        options[:excluded_tag_ids].each do |exclusion_id|
+          body.must_not(:term, filter_ids: exclusion_id)
         end
       end
 
       # Returns an array of match filters for excluded tag names
-      def tag_name_exclusion_queries
-        return [] if options[:excluded_tag_names].blank?
-        options[:excluded_tag_names].map do |tag_name|
-          multi_match_query(tag_name_fields, tag_name)
+      def add_tag_name_exclusion_queries
+        return if options[:excluded_tag_names].blank?
+        options[:excluded_tag_names].each do |tag_name|
+          body.must_not(
+            :multi_match,
+            field: tag_name_fields,
+            query: tag_name
+          )
         end
       end
 

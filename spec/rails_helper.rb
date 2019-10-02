@@ -74,4 +74,20 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include SearchSpecHelper
   config.include AuthHelper, type: :request
+
+  config.before :each, bookmark_search: true do
+    Bookmark.reindex
+  end
+
+  config.before :each, pseud_search: true do
+    Pseud.reindex
+  end
+
+  config.before :each, tag_search: true do
+    Tag.reindex
+  end
+
+  config.before :each, work_search: true do
+    Work.reindex
+  end
 end

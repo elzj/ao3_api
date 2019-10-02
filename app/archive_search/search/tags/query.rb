@@ -3,53 +3,55 @@
 module Search
   module Tags
     # Query builder for tag searches
-    class Query < Search::Base::Query
-      def klass
-        'Tag'
+    class Query
+      attr_reader :options, :body
+
+      def initialize(options)
+        @options = options.with_indifferent_access
+        @body = Search::Body.new
       end
 
-      def indexer_class
-        Indexer
+      def to_hash
+        build_body
+        body.to_hash
       end
 
-      # Filters that the results must match, generally number fields
-      def filters
-        @filters = (
-          term_filters + terms_filters + [wrangled_filter]
-        ).compact
+      def build_body
+        add_term_filters
+        add_terms_filters
+        add_wrangled_filter
+        add_name_query
       end
 
-      # Text queries that the results must match
-      def musts
-        @musts = [name_query].compact
-      end
-
-      # Return an array of term filters for each of our
-      # keyword and boolean options
-      def term_filters
+      # Add term filters for each of our keyword and boolean options
+      def add_term_filters
         %i(tag_type canonical unwrangleable has_posted_works).map do |field|
           value = options[field]
-          term_filter(field, value) unless value.nil?
+          body.filter(:term, field => value) unless value.nil?
         end
       end
 
-      # Return an array of terms filters for each of our id options
-      def terms_filters
+      # Add terms filters for each of our id options
+      def add_terms_filters
         %i(media_ids fandom_ids character_ids pre_fandom_ids pre_character_ids).map do |field|
           value = options[field]
-          terms_filter(field, value) unless value.nil?
+          body.filter(:terms, field => value) unless value.nil?
         end
       end
 
       # Say a tag is wrangled if it has fandoms
-      def wrangled_filter
-        exists_filter(:fandom_ids) if options[:wrangled]
+      def add_wrangled_filter
+        body.filter(:exists, field: :fandom_ids) if options[:wrangled]
       end
 
       # Search by tag name, weighting exact matches higher
-      def name_query
-        fields = ["name.exact^2", "name"]
-        query_string_query(fields, options[:name]) if options[:name].present?
+      def add_name_query
+        return if options[:name].blank?
+        body.must(
+          :query_string,
+          query: options[:name],
+          fields: ["name.exact^2", "name"]
+        )
       end
     end
   end

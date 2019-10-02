@@ -3,26 +3,9 @@
 module Search
   module Bookmarks
     class SeriesDocument
-      WHITELISTED_ATTRIBUTES = %w[
-        complete created_at hidden_by_admin posted
-        restricted revised_at summary title word_count
-      ].freeze
-
-      INDEXED_METHODS = %w[
-        archive_warning_ids
-        category_ids
-        character_ids
-        collection_ids
-        creators
-        fandom_ids
-        filter_ids
-        freeform_ids
-        pseud_ids
-        rating_ids
-        relationship_ids
-        tag
-        work_types
-      ].freeze
+      WHITELISTED_ATTRIBUTES = %w(
+        title summary hidden_by_admin created_at restricted complete
+      ).freeze
 
       attr_reader :record
 
@@ -30,18 +13,13 @@ module Search
         @record = record
       end
 
-      def to_hash
+      def as_json(options = {})
         record.as_json(
-          root: false,
-          only: WHITELISTED_ATTRIBUTES,
-          methods: INDEXED_METHODS,
+          only: WHITELISTED_ATTRIBUTES
         ).merge(
-          language_id:        record.language_short,
-          anonymous:          record.anonymous?,
-          unrevealed:         record.unrevealed?,
-          bookmarkable_type:  'Work',
+          bookmarkable_type:  'Series',
           bookmarkable_join:  { name: "bookmarkable" }
-        )
+        ).merge(options)
       end
     end
   end

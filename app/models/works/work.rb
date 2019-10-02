@@ -12,6 +12,9 @@ class Work < ApplicationRecord
                   endnotes: [:html, :css],
                   summary:  [:html]
 
+  searchkick mappings: Search::WorkSearch.mappings,
+             settings: Search::WorkSearch.settings
+
   ### ASSOCIATIONS ###
   
   belongs_to :language
@@ -63,6 +66,10 @@ class Work < ApplicationRecord
 
   def clean_title
     self.title = (title || '').strip
+  end
+
+  def search_data
+    Search::WorkSearch.document(self)
   end
 
   alias_attribute :anonymous?, :in_anon_collection

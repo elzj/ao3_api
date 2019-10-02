@@ -101,7 +101,7 @@ RSpec.describe Search::Works::Summary, type: :model do
 
   def summary_for(options = {})
     Search::Works::Summary.new(
-      Search::Works::Form.new(options)
+      Search::WorkSearch.new(options)
     )
   end
 

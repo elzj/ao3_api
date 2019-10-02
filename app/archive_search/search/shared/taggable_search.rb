@@ -1,6 +1,6 @@
 module Search
   module Shared
-    module TaggableForm
+    module TaggableSearch
       def load_tags
         ids = Tag::TAGGABLE_TYPES.flat_map do |tag_type|
           send("#{tag_type.underscore}_ids")

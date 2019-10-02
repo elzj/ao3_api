@@ -2,7 +2,7 @@
 
 module Search
   module Bookmarks
-    class WorkDocument < Search::Base::Document
+    class WorkDocument
       include Search::Shared::CreatableDocument
       include Search::Shared::TaggableDocument
 
@@ -10,6 +10,12 @@ module Search
         complete created_at hidden_by_admin posted
         restricted revised_at summary title word_count
       ).freeze
+
+      attr_reader :record
+
+      def initialize(record)
+        @record = record
+      end
 
       def as_json(options = {})
         record.as_json(

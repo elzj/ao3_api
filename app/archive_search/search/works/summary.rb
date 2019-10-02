@@ -12,7 +12,7 @@ module Search
       end
 
       def text
-        form.process_data unless form.processed?
+        form.process_input unless form.processed?
         construct_summary
         @lines.uniq.join(" ")
       end

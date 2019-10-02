@@ -3,150 +3,127 @@
 module Search
   module Works
     # Query builder for work searches
-    class Query < Search::Base::Query
+    class Query
       include Search::Shared::TaggableQuery
 
-      def klass
-        'Work'
+      attr_reader :options, :body
+
+      def initialize(options)
+        @options = options.with_indifferent_access
+        @body = Search::Body.new
       end
 
-      def indexer_class
-        Indexer
+      def to_hash
+        build_body
+        body.to_hash
       end
 
-      ####################
-      # FILTERS
-      ####################
+      def build_body
+        add_filters
+        add_queries
+        add_exclusions
+      end
 
       # Boolean, id, number, and date filters
-      def filters
-        @filters = [
-          term_filters,
-          terms_filters,
-          range_filters
-        ].flatten.compact
+      def add_filters
+        add_term_filters
+        add_terms_filters
+        add_range_filters
       end
 
       # The text-based options the results must match
-      def musts
-        @musts = [
-          general_query,
-          title_query,
-          creators_query,
-          series_query,
-          collected_query,
-          tag_name_query
-        ].flatten.compact
+      def add_queries
+        add_general_query
+        add_title_query
+        add_creators_query
+        add_series_query
+        add_collected_query
+        add_tag_name_query
       end
 
       # Results to exclude
-      def must_nots
-        @must_nots = [
-          tag_exclusions,
-          tag_name_exclusion_queries
-        ].flatten.compact
+      def add_exclusions
+        add_tag_exclusions
+        add_tag_name_exclusion_queries
       end
 
       # Facets for filterable pages
-      def aggregations
-        (collection_aggregation || {}).
-          merge(tag_aggregations || {})
+      def add_aggregations
+        # (collection_aggregation || {}).
+        #   merge(tag_aggregations || {})
       end
 
       # Combine all our term filters
-      def term_filters
-        [
-          term_filter(:posted, true),
-          term_filter(:hidden_by_admin, false)
-        ] + conditional_filters + boolean_filters + tag_filters
-      end
+      def add_term_filters
+        body.filter(:term, posted: true)
+        body.filter(:term, hidden_by_admin: false)
+        body.filter(:term, restricted: false) unless include_restricted?
+        body.filter(:term, unrevealed: false) unless include_unrevealed?
+        body.filter(:term, anonymous: false)  unless include_anon?
+        body.filter(:term, chapter_count: 1)  if options[:single_chapter]
 
-      # Simple filters based on boolean values
-      def conditional_filters
-        conditionals = []
-        unless include_restricted?
-          conditionals << term_filter(:restricted, false)
-        end
-        unless include_unrevealed?
-          conditionals << term_filter(:unrevealed, false)
-        end
-        unless include_anon?
-          conditionals << term_filter(:anonymous, false)
-        end
-        if options[:single_chapter].present?
-          conditionals << term_filter(:chapter_count, 1)
-        end
-        conditionals
-      end
-
-      # More boolean filters based on user input
-      def boolean_filters
         %i(complete language crossover).map do |field|
           value = options[field]
-          term_filter(field, value) unless value.nil?
+          body.filter(:term, field => value) unless value.nil?
         end
+        add_tag_filters
       end
 
       # Terms filters that match arrays of values
-      def terms_filters
-        [
-          work_type_filter, user_filter, pseud_filter, collection_filter
-        ].compact
+      def add_terms_filters
+        add_work_type_filter
+        add_user_filter
+        add_pseud_filter
+        add_collection_filter
       end
 
       # Work types are keywords here so they can be filtered on
-      def work_type_filter
+      def add_work_type_filter
         return if options[:work_types].blank?
-        terms_filter(:work_types, options[:work_types])
+        body.filter(:terms, work_types: options[:work_types])
       end
 
-      def user_filter
+      def add_user_filter
         return if options[:user_ids].blank?
-        terms_filter("creators.user_id", options[:user_ids])
+        body.filter(:terms, "creators.user_id" => options[:user_ids])
       end
 
-      def pseud_filter
+      def add_pseud_filter
         return if options[:pseud_ids].blank?
-        terms_filter("creators.id", options[:pseud_ids])
+        body.filter(:terms, "creators.id" => options[:pseud_ids])
       end
 
-      def collection_filter
+      def add_collection_filter
         return if options[:collection_ids].blank?
-        terms_filter("collections.id", options[:collection_ids])
+        body.filter(:terms, "collections.id" => options[:collection_ids])
       end
 
       # Takes user input for number and date fields
       # and turns it into range filters
-      def range_filters
-        ranges = %i(word_count hit_count kudos_count comments_count bookmarks_count revised_at).map do |countable|
+      def add_range_filters
+        %i(word_count hit_count kudos_count comments_count bookmarks_count revised_at).each do |countable|
           next unless options[countable]
           range = Search::RangeParser.string_to_range(options[countable])
-          next if range.blank?
-          range_filter(
-            countable,
-            min: range[:min],
-            max: range[:max]
-          )
+          body.filter(:range, countable => range) unless range.blank?
         end
-        ranges + [date_range_filter, word_count_filter]
+        add_date_range_filter
+        add_word_count_filter
       end
 
-      def date_range_filter
+      def add_date_range_filter
         return unless options[:date_from] || options[:date_to]
-        range_filter(
-          :revised_at,
-          min: options[:date_from],
-          max: options[:date_to]
-        )
+        range = {}
+        range[:gte] = options[:date_from] if options[:date_from]
+        range[:lte] = options[:date_to] if options[:date_to]
+        body.filter(:range, revised_at: range)
       end
 
-      def word_count_filter
+      def add_word_count_filter
         return unless options[:words_from] || options[:words_to]
-        range_filter(
-          :word_count,
-          min: options[:words_from],
-          max: options[:words_to]
-        )
+        range = {}
+        range[:gte] = options[:words_from] if options[:words_from]
+        range[:lte] = options[:words_to] if options[:words_to]
+        body.filter(:range, word_count: range)
       end
 
       ####################
@@ -156,7 +133,7 @@ module Search
       # Search for a tag by name
       # Note that fields don't need to be explicitly included in the
       # field list to be searchable directly (ie, "complete:true" will still work)
-      def general_query
+      def add_general_query
         fields = [
           "creators.name^5",
           "title^7",
@@ -167,28 +144,33 @@ module Search
           "series.title"
         ]
         query_string = options[:q]
-        query_string_query(fields, query_string) if query_string.present?
+        return if query_string.blank?
+        body.must(
+          :query_string,
+          fields: fields,
+          query: query_string
+        )
       end
 
-      def title_query
+      def add_title_query
         return if options[:title].blank?
-        match_query(:title, options[:title])
+        body.must(:match, title: options[:title])
       end
 
-      def creators_query
+      def add_creators_query
         return if options[:creators].blank?
-        match_query("creators.name", options[:creators])
+        body.must(:match, "creators.name" => options[:creators])
       end
 
-      def series_query
+      def add_series_query
         return if options[:series].blank?
-        match_query("series.title", options[:series])
+        body.must(:match, "series.title", options[:series])
       end
 
       # Get all works that have collections
-      def collected_query
+      def add_collected_query
         return if options[:collection_ids].present? || !collected?
-        query_string_query("collections.id", "*")
+        body.must(:query_string, "collections.id" => "*")
       end
 
       def collection_aggregation

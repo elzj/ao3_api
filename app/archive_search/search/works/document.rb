@@ -3,7 +3,7 @@
 module Search
   module Works
     # Creates an indexable hash of work data
-    class Document < Search::Base::Document
+    class Document
       include Search::Shared::CollectibleDocument
       include Search::Shared::CreatableDocument
       include Search::Shared::TaggableDocument
@@ -14,6 +14,12 @@ module Search
         posted restricted revised_at summary title
         title_to_sort_on updated_at word_count work_skin_id
       ).freeze
+
+      attr_reader :record
+
+      def initialize(record)
+        @record = record
+      end
 
       def as_json(options = {})
         record.as_json(

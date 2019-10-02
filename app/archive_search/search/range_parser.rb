@@ -46,15 +46,15 @@ module Search
     def parse_time(operand:, amount:, period:)
       case operand
       when "<"
-        { min: time_from_string(amount, period) }
+        { gte: time_from_string(amount, period) }
       when ">"
-        { max: time_from_string(amount, period) }
+        { lte: time_from_string(amount, period) }
       when ""
         match = amount.match(/-/)
         if match
           {
-            min: time_from_string(match.pre_match, period),
-            max: time_from_string(match.post_match, period)
+            gte: time_from_string(match.pre_match, period),
+            lte: time_from_string(match.post_match, period)
           }
         else
           range_from_string(amount, period)
@@ -68,20 +68,20 @@ module Search
     def parse_numbers(operand:, value:)
       case operand
       when "<"
-        { max: sanitize_integer(value) }
+        { lte: sanitize_integer(value) }
       when ">"
-        { min: sanitize_integer(value) }
+        { gte: sanitize_integer(value) }
       when ""
         match = value.match(/-/)
         if match
           {
-            min: sanitize_integer(match.pre_match),
-            max: sanitize_integer(match.post_match)
+            gte: sanitize_integer(match.pre_match),
+            lte: sanitize_integer(match.post_match)
           }
         else
           {
-            min: sanitize_integer(value),
-            max: sanitize_integer(value)
+            gte: sanitize_integer(value),
+            lte: sanitize_integer(value)
           }
         end
       end
@@ -108,7 +108,7 @@ module Search
       end
 
       min, max = [min, max].map { |date| sanitize_date(date) }
-      { min: min, max: max }
+      { gte: min, lte: max }
     end
 
     def unescape(str)

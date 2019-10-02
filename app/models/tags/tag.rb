@@ -9,6 +9,9 @@ class Tag < ApplicationRecord
   include Autocompleted
   include StringCleaner
 
+  searchkick mappings: Search::TagSearch.mappings,
+             settings: Search::TagSearch.settings
+
   ### ASSOCIATIONS
 
   # Direct uses of tags on user content
@@ -167,6 +170,11 @@ class Tag < ApplicationRecord
   # Can be set by subclasses
   def parent_types
     []
+  end
+
+  # Create a tag document for indexing
+  def search_data
+    Search::TagSearch.document(self)
   end
 
   def suggested_parent_ids(tag_type)

@@ -16,13 +16,12 @@ module Search
 
       def as_json(options = {})
         record.as_json(
-          root: false,
-          only: WHITELISTED_ATTRIBUTES,
+          only: WHITELISTED_ATTRIBUTES
         ).merge(
           has_posted_works: record.has_posted_works?,
           tag_type:         record.type,
           uses:             record.taggings_count_cache
-        ).merge(parent_data)
+        ).merge(parent_data).merge(options)
       end
 
       # Index parent data for tag wrangling searches
