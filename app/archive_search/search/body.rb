@@ -58,7 +58,7 @@ module Search
 
     # Set the sort field and direction
     def sort(field, direction = 'desc')
-      @sorting = { field => { order: direction } }
+      @sorting = { field => direction }
       self
     end
 

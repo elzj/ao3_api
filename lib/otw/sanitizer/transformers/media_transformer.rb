@@ -91,7 +91,7 @@ module Otw
 
         def blacklisted_source?
           return unless source_host
-          ArchiveConfig.BLACKLISTED_MULTIMEDIA_SRCS.any? do |blocked|
+          ArchiveConfig.media[:blacklisted_srcs].any? do |blocked|
             source_host.match(blocked)
           end
         end

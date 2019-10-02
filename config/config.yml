@@ -12,6 +12,8 @@ development: &default
   jwt_secret: 'override_me_locally'
   locales:
     default_id: 1
+  media:
+    blacklisted_srcs: []
   profiles:
     title_max: 255
     location_max: 255
