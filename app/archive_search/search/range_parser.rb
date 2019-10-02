@@ -100,12 +100,8 @@ module Search
       amount = amount.to_i
       period = period.singularize
 
-      if %w(year month week day hour).include?(period)
-        min = amount.send(period).ago.send("beginning_of_#{period}")
-        max = min.send("end_of_#{period}")
-      else
-        raise "unknown period: " + period
-      end
+      min = amount.send(period).ago.send("beginning_of_#{period}")
+      max = min.send("end_of_#{period}")
 
       min, max = [min, max].map { |date| sanitize_date(date) }
       { gte: min, lte: max }

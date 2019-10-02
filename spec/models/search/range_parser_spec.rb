@@ -43,6 +43,18 @@ RSpec.describe Search::RangeParser, type: :model do
         range = Search::RangeParser.string_to_range(str)
         expect(range).to match(gte: min_date, lte: max_date)
       end
+
+      context 'when not given an operand' do
+        # '1 year ago' essentially becomes 'last year'
+        # '3 weeks ago' becomes the full range of that week
+        it 'returns a localized range' do
+          str = '1 year ago'
+          min_date = 1.year.ago.beginning_of_year.to_date
+          max_date = min_date.end_of_year
+          range = Search::RangeParser.string_to_range(str)
+          expect(range).to match(gte: min_date, lte: max_date)
+        end
+      end
     end
 
     context 'when given a number range' do
@@ -62,6 +74,12 @@ RSpec.describe Search::RangeParser, type: :model do
         str = "1000-8000"
         range = Search::RangeParser.string_to_range(str)
         expect(range).to match(gte: 1000, lte: 8000)
+      end
+
+      it 'returns a range for a single number' do
+        str = 12
+        range = Search::RangeParser.string_to_range(str)
+        expect(range).to match(gte: 12, lte: 12)
       end
 
       it 'ignores whitespace' do
