@@ -90,4 +90,8 @@ RSpec.configure do |config|
   config.before :each, work_search: true do
     Work.reindex
   end
+
+  config.before :each, redis: true do
+    REDIS.flushdb
+  end
 end

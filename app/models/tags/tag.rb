@@ -81,6 +81,17 @@ class Tag < ApplicationRecord
 
   ## GENERAL UTILITIES ##
 
+  def self.autocomplete_buckets
+    [
+      "autocomplete_#{self.name.underscore}",
+      "autocomplete_tag"
+    ]
+  end
+
+  def self.autocomplete_fields
+    [:name]
+  end
+
   ## FINDERS ##
 
   # Find tags by type
@@ -158,6 +169,10 @@ class Tag < ApplicationRecord
   end
 
   ### INSTANCE METHODS ###
+
+  def autocomplete_score
+    uses
+  end
 
   def has_posted_works?
     works.posted.exists?

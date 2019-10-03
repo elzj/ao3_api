@@ -1,4 +1,7 @@
 development: &default
+  autocomplete:
+    separator: '{'
+    terminator: ',,'
   bookmarks:
     notes_max: 5000
   chapters:
@@ -22,6 +25,9 @@ development: &default
     name_min: 1
     name_max: 40
     description_max: 500
+  redis:
+    host: 'localhost'
+    port: '6379'
   search:
     bookmark_shards: 5
     max_results: 100000
