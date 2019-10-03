@@ -56,6 +56,7 @@ module Autocompleted
   end
 
   def autocomplete_value
+    return unless autocomplete_strings.any?(&:present?)
     separator = ArchiveConfig.autocomplete[:separator]
     ([id] + autocomplete_strings).join(separator)
   end
@@ -67,6 +68,7 @@ module Autocompleted
   end
 
   def autocomplete_old_value
+    return unless autocomplete_old_strings.any?(&:present?)
     separator = ArchiveConfig.autocomplete[:separator]
     ([id] + autocomplete_old_strings).join(separator)
   end
@@ -86,6 +88,7 @@ module Autocompleted
   end
 
   def remove_from_autocomplete
+    return if autocomplete_old_value.blank?
     autocomplete_buckets.each do |bucket|
       Autocomplete::Writer.remove(
         bucket, autocomplete_old_value
@@ -94,6 +97,7 @@ module Autocompleted
   end
 
   def add_to_autocomplete
+    return if autocomplete_value.blank?
     autocomplete_buckets.each do |bucket|
       Autocomplete::Writer.add(
         bucket, autocomplete_value, autocomplete_score
