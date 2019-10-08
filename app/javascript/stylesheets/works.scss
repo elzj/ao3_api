@@ -1,0 +1,99 @@
+#works-index { display: flex; }
+#works-index .works {
+  width: 70%;
+  flex-direction: row;
+}
+#works-index .card { margin-bottom: 1em; }
+#works-index .meta { float: left; }
+
+.blurb .date   { float: right; }
+.blurb .icons  { float: left; margin-right: 1em; }
+.blurb .tags   { margin: 1em 0; }
+.blurb .series { margin-top:1em; }
+
+dl.stats {
+  display: inline;
+  float: right;
+  margin-top: 1.5em;
+}
+dl.stats dt, dl.stats dd { display: inline; }
+dl.stats dt { font-weight: normal; margin-left: 0.5em; }
+
+.filters {
+   width: 25%;
+   flex-direction: row;
+   margin: 0 1em;
+}
+.filters label { display: inline; }
+.filters h4 {
+  border-top: 1px solid #ccc;
+  padding: 1em 0 0.5em 0;
+}
+.filters h4 a { color: black; }
+.filters .sort select { width: 100%; margin-bottom: 1em;}
+
+/* Styles for the rating/warning/etc. icon blocks on work blurbs */
+
+#icon-block {
+  width: 60px;
+  max-width: 60px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+#icon-block div {
+  background: #f5f5f5 no-repeat center;
+  height: 25px;
+  width: 25px;
+  font-size: 0.001em;
+  color: transparent;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
+  margin: 0 0.5em 0.5em 0;
+  flex: auto;
+}
+#icon-block .complete {
+  background-image: url('/icons/complete.svg');
+}
+#icon-block .incomplete {
+  background-image: url('/icons/incomplete.svg');
+}
+#icon-block .warning-yes {
+  background-image: url('/icons/warning-yes.svg');
+}
+#icon-block .warning-no {
+  background-image: url('/icons/warning-no.svg');
+}
+#icon-block .warning-maybe {
+  background-image: url('/icons/warning-maybe.svg');
+}
+#icon-block .media-text {
+  background-image: url('/icons/media-text.svg');
+}
+#icon-block .media-video {
+  background-image: url('/icons/media-video.svg');
+}      
+#icon-block .media-art {
+  background-image: url('/icons/media-art.svg');
+}
+#icon-block .media-audio {
+  background-image: url('/icons/media-audio.svg');
+} 
+#icon-block .rating-general {
+  background-image: url('/icons/rating-general.svg');
+}
+#icon-block .rating-teen {
+  background-image: url('/icons/rating-teen.svg');
+}
+#icon-block .rating-mature {
+  background-image: url('/icons/rating-mature.svg');
+}
+#icon-block .rating-explicit {
+  background-image: url('/icons/rating-explicit.svg');
+}
+#icon-block .rating-none {
+  background: white;
+  color: black;
+}
