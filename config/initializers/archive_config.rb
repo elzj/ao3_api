@@ -6,8 +6,9 @@ main_config = "#{Rails.root}/config/config.yml"
 # Override options locally
 local_config = "#{Rails.root}/config/local.yml"
 
-hash = YAML.load_file(main_config)[Rails.env] || {}
+data = YAML.load(ERB.new(File.read(main_config)).result)[Rails.env]
 if File.exist?(local_config)
-  hash = hash.deep_merge(YAML.load_file(local_config)[Rails.env] || {})
+  local_data = YAML.load(ERB.new(File.read(local_config)).result)[Rails.env]
+  data = data.deep_merge(local_data || {})
 end
-::ArchiveConfig = OpenStruct.new(hash.with_indifferent_access).freeze
+::ArchiveConfig = OpenStruct.new(data.with_indifferent_access).freeze

@@ -15,6 +15,8 @@ development: &default
   jwt_secret: 'override_me_locally'
   locales:
     default_id: 1
+  mail:
+    sender: 'nobody@example.com'
   media:
     blacklisted_srcs: []
   profiles:
@@ -26,8 +28,7 @@ development: &default
     name_max: 40
     description_max: 500
   redis:
-    host: 'localhost'
-    port: '6379'
+    url: 'redis://localhost:6379'
   search:
     bookmark_shards: 5
     max_results: 100000
@@ -57,3 +58,12 @@ development: &default
 
 test:
   <<: *default
+sandbox:
+  <<: *default
+  host: 'https://otw-elz.herokuapp.com'
+  mail:
+    sender: 'otw@otw-elz.herokuapp.com'
+  redis:
+    url: <%= ENV['REDIS_URL'] %>
+  search:
+    url: <%= ENV['BONSAI_URL'] %>
