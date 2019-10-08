@@ -85,7 +85,7 @@ class Tag < ApplicationRecord
     [
       "autocomplete_#{self.name.underscore}",
       "autocomplete_tag"
-    ]
+    ].uniq
   end
 
   def self.autocomplete_fields

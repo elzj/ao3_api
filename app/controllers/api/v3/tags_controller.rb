@@ -11,6 +11,11 @@ class Api::V3::TagsController < Api::V3::BaseController
     render json: @tag.as_json
   end
 
+  def autocomplete
+    tags = Tag.autocomplete(search_param: params[:q])
+    render json: tags.to_json
+  end
+
   protected
 
   def query_params

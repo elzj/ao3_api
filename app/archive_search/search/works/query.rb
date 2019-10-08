@@ -22,6 +22,7 @@ module Search
         add_filters
         add_queries
         add_exclusions
+        add_aggregations
       end
 
       # Boolean, id, number, and date filters
@@ -49,8 +50,8 @@ module Search
 
       # Facets for filterable pages
       def add_aggregations
-        # (collection_aggregation || {}).
-        #   merge(tag_aggregations || {})
+        add_collection_aggregation
+        add_tag_aggregations
       end
 
       # Combine all our term filters
@@ -173,8 +174,8 @@ module Search
         body.must(:query_string, "collections.id" => "*")
       end
 
-      def collection_aggregation
-        terms_aggregation(:collections, :collection_ids) if collected?
+      def add_collection_aggregation
+        body.aggregate(:collections, :collection_ids) if collected?
       end
 
       ####################

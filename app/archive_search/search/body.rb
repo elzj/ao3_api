@@ -11,6 +11,7 @@ module Search
     # Begin with an empty bool context
     def initialize
       @bool = Bool.new
+      @aggregations = {}
     end
 
     def all
@@ -37,6 +38,13 @@ module Search
 
     def should(query_type, options = {})
       bool.should(query_type, options)
+      self
+    end
+
+    def aggregate(label, field)
+      @aggregations[label] = {
+        terms: { field: field }
+      }
       self
     end
 
@@ -74,6 +82,7 @@ module Search
       data = size ? { size: size, from: offset } : {}
       data[:sort] = sorting if sorting
       data[:query] = bool.to_hash unless bool.to_hash[:bool].empty?
+      data[:aggs] = @aggregations unless @aggregations.empty?
       data
     end
   end

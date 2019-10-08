@@ -82,6 +82,7 @@ describe Search::Body, type: :model do
           .must_not(:terms, tag_ids: [3, 4])
           .should(:match, name: "Frodo")
           .should(:match, name: "Bilbo")
+          .aggregate(:tags, :tag_ids)
           .page(2)
           .per_page(25)
           .sort(:revised_at, :desc)
@@ -103,6 +104,11 @@ describe Search::Body, type: :model do
               { match: { name: "Bilbo" } }
             ],
             minimum_should_match: 1
+          }
+        },
+        aggs: {
+          tags: {
+            terms: { field: :tag_ids }
           }
         },
         from: 25,

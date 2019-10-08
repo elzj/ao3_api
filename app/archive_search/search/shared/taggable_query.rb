@@ -57,13 +57,11 @@ module Search
         end + ["tags.name", "meta_tags.name"]
       end
 
-      def tag_aggregations
+      def add_tag_aggregations
         return unless filtered?
         Tag::TAGGABLE_TYPES.inject({}) do |aggs, tag_type|
-          label = tag_type.underscore
-          aggs.merge!(
-            terms_aggregation(label, "#{label}_ids")
-          )
+          label = tag_type.underscore.pluralize
+          body.aggregate(label, "#{label}.id")
         end
       end
     end

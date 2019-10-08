@@ -47,8 +47,9 @@ module Search
 
       def work_data
         {
+          chapters_expected: record.expected_number_of_chapters,
+          chapters_posted:   record.chapters.where(posted: true).count,
           anonymous:      record.in_anon_collection?,
-          chapter_count:  record.expected_number_of_chapters,
           crossover:      crossover?,
           language:       record.language_short,
           nonfiction:     nonfiction?,

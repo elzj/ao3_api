@@ -20,7 +20,8 @@ module Search
         ).merge(
           has_posted_works: record.has_posted_works?,
           tag_type:         record.type,
-          uses:             record.taggings_count_cache
+          uses:             record.uses,
+          suggest:          suggester_data
         ).merge(parent_data).merge(options)
       end
 
@@ -36,6 +37,38 @@ module Search
           end
         end
         data
+      end
+
+      def suggester_data
+        {
+          input: suggester_tokens,
+          weight: suggester_weight,
+          contexts: {
+            typeContext: [
+              record.type,
+              record.canonical? ? "Canonical#{record.type}" : nil
+            ].compact
+          }
+        }
+      end
+
+      # Gives the sugggester an array of strings broken up by words
+      # For "The Neverending Story", for example, you'd get:
+      # ["The Neverending Story", "Neverending Story", "Story"]
+      def suggester_tokens
+        tokens = [record.name]
+        # return tokens if !canonical?
+        words = record.name.split(/[^\da-zA-Z]/)
+        while words.length > 0
+          words.shift
+          next if words.first.nil? || words.first.length < 3
+          tokens << words.join(" ").squish
+        end
+        tokens.uniq[0..19]
+      end
+
+      def suggester_weight
+        record.uses
       end
     end
   end

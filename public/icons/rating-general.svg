@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<svg width="50" height="50" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    rect { fill: #25AE88 }
+    text {
+      font-size: 40px;
+      font-family: Helvetica, Arial, sans-serif;
+      font-weight: bold;
+    }
+  </style>
+  <rect width='300' height='200' />
+  <text x='8' y='38' fill='white'>G</text>
+</svg>
