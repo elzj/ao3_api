@@ -3,10 +3,10 @@ cache: bundler
 rvm:
   - 2.6.5
 services:
-  - mysql
+  - postgresql
   - redis-server
 before_install:
-  - mysql -e 'CREATE DATABASE ao3_api_test;'
+  - psql -c 'create database travis_ci_test;' -U postgres
 before_script:
   - bash script/travis_elasticsearch_upgrade.sh
   - sleep 10
