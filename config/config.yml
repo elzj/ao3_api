@@ -28,7 +28,7 @@ development: &default
     name_max: 40
     description_max: 500
   redis:
-    url: 'redis://localhost:6379'
+    url: <%= ENV['REDIS_URL'] || 'redis://localhost:6379' %>
   search:
     bookmark_shards: 5
     max_results: 100000
@@ -36,7 +36,7 @@ development: &default
     pseud_shards: 1
     tag_shards: 1
     tags_per_page: 50
-    url: 'http://127.0.0.1:9400'
+    url: <%= ENV['ES_URL'] || 'http://127.0.0.1:9400' %>
     work_shards: 5
   series:
     notes_max: 5000
@@ -60,10 +60,4 @@ test:
   <<: *default
 sandbox:
   <<: *default
-  host: 'https://otw-elz.herokuapp.com'
-  mail:
-    sender: 'otw@otw-elz.herokuapp.com'
-  redis:
-    url: <%= ENV['REDIS_URL'] %>
-  search:
-    url: <%= ENV['BONSAI_URL'] %>
+  host: 'otw-elz.herokuapp.com'
