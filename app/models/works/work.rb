@@ -12,11 +12,11 @@ class Work < ApplicationRecord
                   endnotes: [:html, :css],
                   summary:  [:html]
 
-  searchkick mappings: Search::WorkSearch.mappings,
-             settings: Search::WorkSearch.settings
+  searchkick mappings: WorkSearch.mappings,
+             settings: WorkSearch.settings
 
   ### ASSOCIATIONS ###
-  
+
   belongs_to :language
 
   has_many :chapters
@@ -69,7 +69,7 @@ class Work < ApplicationRecord
   end
 
   def search_data
-    Search::WorkSearch.document(self)
+    WorkSearch.document(self)
   end
 
   alias_attribute :anonymous?, :in_anon_collection
