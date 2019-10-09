@@ -17,8 +17,9 @@ RSpec.describe Pseud, type: :model do
 
   describe '.default' do
     it "asks for records where is_default is true" do
-      sql = Pseud.default.to_sql
-      expect(sql).to eq("SELECT `pseuds`.* FROM `pseuds` WHERE `pseuds`.`is_default` = TRUE")
+      default_pseud = create(:pseud, is_default: true)
+      other_pseud = create(:pseud, is_default: false)
+      expect(Pseud.default).to eq([default_pseud])
     end
   end
 

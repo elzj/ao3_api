@@ -49,7 +49,13 @@ module Search
     end
 
     def self.permitted_params
-      ATTRIBUTES
+      ATTRIBUTES.map do |att|
+        if att.match(/_ids|_names/)
+          { att => [] }
+        else
+          att
+        end
+      end
     end
 
     # The JSON document to be indexed
@@ -65,6 +71,10 @@ module Search
       SETTINGS
     end
 
+    def client
+      @client ||= Search::Client.new_client
+    end
+
     # Generate an elasticsearch query
     def search_body
       process_input unless processed?
@@ -72,8 +82,19 @@ module Search
     end
 
     # Pass our query to the searchkick search method
-    def search_results(load: true)
-      Work.search(body: search_body, load: load)
+    def search_results(load: false)
+      if load
+        Work.search(body: search_body, load: load)
+      else
+        Search::Result.new(
+          wrapper: WorkBlurb,
+          response: client.search(
+            index: Work.searchkick_index.name,
+            body: search_body
+          ),
+          page: page || 1
+        )
+      end
     end
 
     def summary

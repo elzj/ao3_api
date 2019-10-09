@@ -23,6 +23,8 @@ module Search
         add_queries
         add_exclusions
         add_aggregations
+        set_sorting
+        set_pagination
       end
 
       # Boolean, id, number, and date filters
@@ -52,6 +54,17 @@ module Search
       def add_aggregations
         add_collection_aggregation
         add_tag_aggregations
+      end
+
+      def set_sorting
+        body.sort(
+          options[:sort_column] || '_score',
+          options[:sort_direction] || 'desc'
+        )
+      end
+
+      def set_pagination
+        body.page(options[:page] || 1).per_page(ArchiveConfig.items_per_page)
       end
 
       # Combine all our term filters

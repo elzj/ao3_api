@@ -30,3 +30,44 @@ h5 {
 }
 
 .sidebar { min-width: 200px; }
+
+
+.landmark {
+  font-size: 0;
+  opacity: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.clear {
+  clear: both;
+  height: 0;
+  border: 0;
+  margin: 0;
+  background: transparent;
+  opacity: 0;
+}
+
+.commas li:after {
+  content: ", ";
+}
+
+.commas li {
+  display: inline;
+}
+
+.commas li:last-child:after, .commas li:only-child:after {
+  content: none;
+}
+
+.pagination span, .pagination em, .pagination a {
+  position: relative;
+  display: block;
+  padding: 0.5em 1em;
+  border: 1px solid #dee2e6;
+}
+.pagination a:hover {
+  background-color: #dee2e6;
+}

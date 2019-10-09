@@ -1,0 +1,21 @@
+<h1>Works</h1>
+
+<div id="works-index">
+  <div class="works">
+    <%= render partial: 'blurb', collection: @works, as: :work %>
+  </div>
+  <div class="filters">
+    <div class="card">
+      <div class="card-header">
+        Filters
+      </div>
+      <div class="card-body">
+        <%= render 'filters' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav aria-label="Page navigation" class="pagination">
+  <%= will_paginate @works %>
+</nav>

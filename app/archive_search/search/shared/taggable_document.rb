@@ -29,7 +29,7 @@ module Search
       end
 
       def direct_filters
-        @direct_filters ||= filters.select { |tag| tag.inherited.zero? }
+        @direct_filters ||= filters.select { |tag| !tag.inherited }
       end
 
       def meta_tags

@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Language < ApplicationRecord
+  AVAILABLE = {
+    de: "Deutsch",
+    en: "English",
+    es: "Espanol"
+  }
   ### ASSOCIATIONS ###
 
   validates :name, presence: true
@@ -16,6 +21,10 @@ class Language < ApplicationRecord
   before_validation :set_sortable_name
 
   ### CLASS METHODS ###
+
+  def self.name_for_short(short)
+    AVAILABLE[short] || "English"
+  end
 
   ### INSTANCE METHODS ###
 

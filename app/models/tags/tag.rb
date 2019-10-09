@@ -92,6 +92,17 @@ class Tag < ApplicationRecord
     [:name]
   end
 
+  def self.display_name(type)
+    case type
+    when ArchiveWarning
+      "Warnings"
+    when Freeform
+      "Additional Tags"
+    else
+      type.titleize.pluralize
+    end
+  end
+
   ## FINDERS ##
 
   # Find tags by type
@@ -202,6 +213,10 @@ class Tag < ApplicationRecord
 
   def syns
     Tag.where(merger_id: id)
+  end
+
+  def to_param
+    "#{id}-#{name.parameterize}".truncate(50)
   end
 
   def uses

@@ -70,8 +70,10 @@ end
 
 gem 'devise', '>= 4.7.1'
 gem 'devise-jwt'
+gem 'draper'
 gem 'elasticsearch', '>=7.0.0'
 gem 'elasticsearch-dsl'
 gem 'sanitize'
 gem 'searchkick'
 gem 'sidekiq'
+gem 'will_paginate'

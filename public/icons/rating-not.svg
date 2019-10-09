@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<svg width="50" height="50" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    rect { fill: #cfcfcf }
+    text {
+      font-size: 40px;
+      font-family: Helvetica, Arial, sans-serif;
+      font-weight: bold;
+    }
+  </style>
+  <rect width='50' height='50' />
+  <text x='10' y='38' fill='white'>N</text>
+</svg>

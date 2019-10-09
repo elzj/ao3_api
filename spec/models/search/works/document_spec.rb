@@ -136,17 +136,17 @@ RSpec.describe Search::Works::Document, type: :model do
           { id: fandom.id, name: fandom.name, type: 'Fandom' }
         ],
         meta_tags: [
-          { id: meta_tag.id, name: meta_tag.name, type: 'Freeform' }
+          { id: meta_tag.id, name: meta_tag.name, type: 'Freeform' }.stringify_keys
         ],
-        fandoms: [
-          { id: fandom.id, name: fandom.name, type: 'Fandom' }
+        'fandoms' => [
+          { id: fandom.id, name: fandom.name, type: 'Fandom' }.stringify_keys
         ],
-        freeforms: [
-          { id: freeform.id, name: freeform.name, type: 'Freeform' }
+        'freeforms' => [
+          { id: freeform.id, name: freeform.name, type: 'Freeform' }.stringify_keys
         ],
-        filter_ids: [fandom.id, freeform.id, meta_tag.id]
+        filter_ids: [fandom.id, meta_tag.id, freeform.id]
       }
-      expect(doc.tag_data.with_indifferent_access).to match(tag_data)
+      expect(doc.tag_data).to match(tag_data)
     end
   end
 end

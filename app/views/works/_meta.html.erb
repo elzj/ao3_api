@@ -1,0 +1,35 @@
+<div class="meta">
+  <dl>
+    <% Tag::TAGGABLE_TYPES.each do |tag_type| %>
+      <%= work.tags_for_type(tag_type) %>
+    <% end %>
+    <dt>Language:</dt>
+    <dd><%= work.language_name %></dd>
+    <dt>Series:</dt>
+    <dd>x</dd>
+    <dt>Collections:</dt>
+    <dd>x</dd>
+    <dt>Stats:</dt>
+    <dd>
+      <dl>
+        <dt>Published:</dt>
+        <dd><%= work.revised_at %></dd>
+        <dt>Words:</dt>
+        <dd><%= number_with_delimiter(work.word_count) %></dd>
+        <dt>Chapters:</dt>
+        <dd><%= work.chapter_count %></dd>
+      </dl>
+      <dl>
+        <dt>Comments:</dt>
+        <dd><%= number_with_delimiter(work.comments_count) %></dd>
+        <dt>Kudos:</dt>
+        <dd><%= number_with_delimiter(work.kudos_count) %></dd>
+        <dt>Bookmarks:</dt>
+        <dd><%= number_with_delimiter(work.bookmarks_count) %></dd>
+        <dt>Hits:</dt>
+        <dd><%= number_with_delimiter(work.hit_count) %></dd>
+      </dl>
+    </dd>
+  </dl>
+  <div class="clear"></div>
+</div>

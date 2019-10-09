@@ -1,0 +1,72 @@
+<div class="card">
+  <div class="card-body blurb">
+    <div class="header module">
+      <h4 class="heading">
+        <%= link_to work.title, work_path(id: work.id) %>
+        by <%= work.creator_link_string %>
+      </h4>
+
+      <h5 class="fandoms heading">
+        <span class="landmark">Fandoms</span>
+        <%= work.fandom_link_string %>
+      </h5>
+
+      <%= work.icon_block %>
+      <p class="datetime"><%= work.date_string %></p>
+    </div>
+
+    <h6 class="landmark heading">Tags</h6>
+    <ul class="tags commas">
+      <%= work.tag_li_list %>
+    </ul>
+
+    <!--summary-->
+    <% unless work.summary.blank? %>
+      <h6 class="landmark heading">Summary</h6>
+      <blockquote class="userstuff summary">
+        <%= work.summary.html_safe %>
+      </blockquote>
+    <% end %>
+
+    <% unless work.series.empty? %>
+      <h6 class="landmark heading">Series</h6>
+      <ul class="series">
+        <% work.series_html_links.each do |series_link| %>
+          <li><%= series_link %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <dl class="stats basics">
+      <dt class="language">Language:</dt>
+      <dd class="language"><%= work.language %></dd>
+      <dt class="words">Words:</dt>
+      <dd class="words"><%= number_with_delimiter(work.word_count) %></dd>
+      <dt class="chapters">Chapters:</dt>
+      <dd class="chapters"><%= work.chapter_count %></dd>
+
+      <% unless work.collections.empty? %>
+        <dt class="collections">Collections:</dt>
+        <dd class="collections"><%= work.collection_count_link %></dd>
+      <% end %>
+    </dl>
+    <dl class="stats counts">
+      <dt class="comments">Comments:</dt>
+      <dd class="comments">
+        <%= number_with_delimiter(work.comments_count) %>    
+      </dd>
+      <dt class="kudos">Kudos:</dt>
+      <dd class="kudos">
+        <%= number_with_delimiter(work.kudos_count) %>
+      </dd>
+      <dt class="bookmarks">Bookmarks:</dt>
+      <dd class="bookmarks">
+        <%= number_with_delimiter(work.bookmarks_count) %>
+      </dd>
+      <dt class="hits">Hits:</dt>
+      <dd class="hits">
+        <%= number_with_delimiter(work.hit_count) %>
+      </dd>
+    </dl>
+  </div>
+</div>

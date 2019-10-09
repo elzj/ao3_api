@@ -27,10 +27,22 @@ Rails.application.routes.draw do
       resources :bookmarks
       resources :drafts
       resources :pseuds
-      resources :tags
+      resources :tags do
+        collection { get 'autocomplete' }
+      end
       resources :works
     end
   end
+
+  resources :tags do
+    resources :works
+  end
+  resources :users do
+    resources :pseuds do
+      resources :works
+    end
+  end
+  resources :works
 
   root to: 'home#index'
 end

@@ -29,7 +29,10 @@ module Search
           hidden_by_admin: { type: "boolean" },
           complete: { type: "boolean" },
           anonymous: { type: "boolean" },
-          unrevealed: { type: "boolean" }
+          unrevealed: { type: "boolean" },
+          created_at: { type: "date" },
+          updated_at: { type: "date" },
+          revised_at: { type: "date" }
         }
       }.freeze
 

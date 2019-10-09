@@ -1,0 +1,35 @@
+<%= form_for @search, as: 'query', url: '/works', method: :get do |f| %>
+  <p>
+    <%= f.submit 'Filter Results', class: 'btn btn-outline-dark' %>  
+  </p>
+
+  <h4><%= f.label :sort_column, "Sort by" %></h4>
+  <div class="sort">
+    <%= f.select :sort_column, options_for_select(@search.sort_options, @search.sort_column) %>
+  </div>
+
+  <% tag_facet_keys.each do |key| %>
+    <h4>
+      <a data-toggle="collapse" href="#collapse-<%= key %>" aria-expanded="false" aria-controls="collapse-<%= key %>">
+        <%= key.titleize %>
+      </a>  
+    </h4>
+    <%= filter_group_div(@search, @works.facets, key) do %>
+      <% @works.facets[key].each do |facet| %>
+        <div class="facet">
+          <%= f.check_box facet.field, { multiple: true }, facet.id.to_s, false %>
+          <%= f.label facet.label_field, facet.label_name %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <h4>
+    Search Within Results
+  </h4>
+  <%= f.text_field :q %>
+
+  <p style="margin-top: 1em">
+    <%= f.submit 'Filter Results', class: 'btn btn-outline-dark' %>  
+  </p>
+<% end %>

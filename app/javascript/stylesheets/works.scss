@@ -4,20 +4,7 @@
   flex-direction: row;
 }
 #works-index .card { margin-bottom: 1em; }
-#works-index .meta { float: left; }
-
-.blurb .date   { float: right; }
-.blurb .icons  { float: left; margin-right: 1em; }
-.blurb .tags   { margin: 1em 0; }
-.blurb .series { margin-top:1em; }
-
-dl.stats {
-  display: inline;
-  float: right;
-  margin-top: 1.5em;
-}
-dl.stats dt, dl.stats dd { display: inline; }
-dl.stats dt { font-weight: normal; margin-left: 0.5em; }
+#works-index .blurb { margin: 1em; padding: 0; }
 
 .filters {
    width: 25%;
@@ -32,68 +19,266 @@ dl.stats dt { font-weight: normal; margin-left: 0.5em; }
 .filters h4 a { color: black; }
 .filters .sort select { width: 100%; margin-bottom: 1em;}
 
-/* Styles for the rating/warning/etc. icon blocks on work blurbs */
-
-#icon-block {
-  width: 60px;
-  max-width: 60px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+.blurb ul li, .blurb dd ul li {
+  display: inline;
+  list-style-type: none;
 }
-#icon-block div {
-  background: #f5f5f5 no-repeat center;
-  height: 25px;
+
+li.blurb, .blurb .blurb {
+  display: block;
+  position: relative;
+  clear: left;
+  padding: 0.429em 0.75em;
+  overflow: visible;
+}
+
+li.blurb:after, .blurb .blurb:after {
+  content: " ";
+  display: block;
+  height: 0;
+  font-size: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.blurb .module {
+  float: none;
+}
+
+.blurb .header {
+  min-height: 55px;
+  margin-bottom: 0.375em;
+}
+
+.blurb .header .heading, .blurb .header ul {
+  display: block;
+  background: transparent;
+  margin: 0 5.25em 0 65px;
+}
+
+.blurb .header img {
+  position: relative;
+  margin: 0;
+}
+
+.blurb h4 a:link, .blurb h4 img {
+  color: #900;
+  vertical-align: bottom;
+}
+
+.blurb .header p.notice, .blurb ul.series {
+  margin: 1.25em 0 0;
+}
+
+.blurb ul.series {
+  margin-bottom: 0.875em;
+}
+
+.blurb .heading {
+  display: block;
+}
+
+.blurb dl.stats {
+  float: right;
+  line-height: 1.5;
+  margin-bottom: 0.5em;
+}
+
+.blurb dl.stats.basics {
+  margin-top: 1em;
+}
+
+.blurb dl.stats.counts {
+  clear: both;
+}
+
+.blurb dl.stats dt, .blurb dl.stats dd {
+  font-weight: normal;
+  display: inline;
+}
+
+.blurb dl.stats dt {
+  margin-left: 0.5em;
+}
+
+.blurb .fandoms .landmark {
+  position: absolute;
+}
+
+.blurb dl.stats + .heading.landmark { 
+  display: inline;
+}
+
+.blurb ul { padding-left: 0; }
+
+/* ==START icon block rules*/
+
+.blurb ul.required-tags {
+  position: absolute;
+  top: 1em;
+  width: 60px;
+  margin: 0;
+}
+
+.blurb ul.required-tags li, .blurb ul.required-tags li span {
+  display: block;
   width: 25px;
+  height: 25px;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.blurb ul.required-tags li {
+  margin-bottom: 3px;
+}
+
+.blurb ul.required-tags li {
+  position: absolute;
+}
+
+.blurb ul.required-tags li.rating {
+  top: 0;
+  left: 0;
+}
+
+.blurb ul.required-tags li.media {
+  top: 0;
+  left: 28px;
+}
+
+.blurb ul.required-tags li.warning {
+  top: 28px;
+  left: 0;
+}
+
+.blurb ul.required-tags li.wip {
+  top: 28px;
+  left: 28px;
+}
+
+/* keeps the outline to the proper size in Firefox and Opera */
+.blurb ul.required-tags li a:focus {
+  overflow: hidden;
+}
+
+.blurb span.text {
+  height: 0;
+  width: 0;
   font-size: 0.001em;
   color: transparent;
+}
+
+.blurb ul.required-tags li span {
+  background-position: center;
+  background-repeat: no-repeat;
   -webkit-background-size: contain;
   -moz-background-size: contain;
   -o-background-size: contain;
   background-size: contain;
-  margin: 0 0.5em 0.5em 0;
-  flex: auto;
 }
-#icon-block .complete {
+
+/*icon image replacement*/
+
+.required-tags .complete {
   background-image: url('/icons/complete.svg');
 }
-#icon-block .incomplete {
+.required-tags .incomplete {
   background-image: url('/icons/incomplete.svg');
 }
-#icon-block .warning-yes {
+.required-tags .warning-yes {
   background-image: url('/icons/warning-yes.svg');
 }
-#icon-block .warning-no {
-  background-image: url('/icons/warning-no.svg');
-}
-#icon-block .warning-maybe {
+.required-tags .warning-maybe {
   background-image: url('/icons/warning-maybe.svg');
 }
-#icon-block .media-text {
+.required-tags .media-text {
   background-image: url('/icons/media-text.svg');
 }
-#icon-block .media-video {
+.required-tags .media-video {
   background-image: url('/icons/media-video.svg');
 }      
-#icon-block .media-art {
+.required-tags .media-art {
   background-image: url('/icons/media-art.svg');
 }
-#icon-block .media-audio {
+.required-tags .media-audio {
   background-image: url('/icons/media-audio.svg');
 } 
-#icon-block .rating-general {
+.required-tags .rating-general {
   background-image: url('/icons/rating-general.svg');
 }
-#icon-block .rating-teen {
+.required-tags .rating-teen {
   background-image: url('/icons/rating-teen.svg');
 }
-#icon-block .rating-mature {
+.required-tags .rating-mature {
   background-image: url('/icons/rating-mature.svg');
 }
-#icon-block .rating-explicit {
+.required-tags .rating-explicit {
   background-image: url('/icons/rating-explicit.svg');
 }
-#icon-block .rating-none {
-  background: white;
-  color: black;
+.required-tags .rating-not {
+  background-image: url('/icons/rating-not.svg');
+}
+.required-tags .warning-no {
+  background: #f5faf6;
+}
+
+/*==END icon block rules==*/
+
+.blurb .datetime {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  margin: 0;
+}
+
+.blurb blockquote {
+  clear: none;
+  margin: 0.643em auto;
+  text-align: justify;
+}
+.blurb li.archive_warnings a {
+  font-weight: bold;
+}
+.blurb li.relationships a {
+  background-color: #eee;
+}
+
+#work .meta {
+  padding: 2em 5em;
+  border: 1px solid #666;
+  margin-bottom: 1em;
+}
+#work .meta ul {
+  padding: 0;
+}
+#work .meta dt {
+  font-weight: normal;
+  min-width: 10.5em;
+  width: 25%;
+  float: left;
+  clear: left;
+}
+#work .meta dd {
+  width: 72.5%;
+  float: left;
+}
+#work .meta ul, #work .meta dl {
+  margin-bottom: 0em;
+}
+#work .meta dd dd {
+  margin-right: 0.5em;
+}
+#work .meta dd dt, #work .meta dd dd {
+  display: inline;
+  float: none;
+  width: auto;
+  min-width: auto;
+}
+
+
+.chapter {
+  width: 60%;
+  margin: 0 auto;
+  font-size: 18px;
 }

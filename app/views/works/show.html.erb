@@ -1,0 +1,61 @@
+<div id="work">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Navigate
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">View Full Work</a>
+          <a class="dropdown-item" href="#">Jump to Comments</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Actions
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Bookmark</a>
+          <a class="dropdown-item" href="#">Mark For Later</a>
+          <a class="dropdown-item" href="#">Subscribe</a>
+          <a class="dropdown-item" href="#">Share</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Edit</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Download
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">HTML</a>
+          <a class="dropdown-item" href="#">PDF</a>
+          <a class="dropdown-item" href="#">MOBI</a>
+          <a class="dropdown-item" href="#">EPUB</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+  <%= render 'meta', work: @work %>
+
+  <div class="preface">
+    <h1 style="text-align: center"><%= @work.title %></h1>
+    <h2 style="text-align: center">by <%= @work.creator_links %></h2>
+
+    <% if @work.summary.present? %>
+      <h3>Summary</h3>
+      <div class="summary"><%= @work.summary.html_safe %></div>
+    <% end %>
+
+    <% if @work.notes.present? %>
+      <h3>Notes</h3>
+      <div class="notes"><%= @work.notes.html_safe %></div>
+    <% end %>
+
+  <%= render partial: 'chapter', collection: @work.chapters, as: :chapter %>
+
+    <% if @work.endnotes.present? %>
+      <h3>Notes</h3>
+      <div class="notes"><%= @work.endnotes.html_safe %></div>
+    <% end %>
+</div>

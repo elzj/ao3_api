@@ -74,4 +74,5 @@ class Work < ApplicationRecord
 
   alias_attribute :anonymous?, :in_anon_collection
   alias_attribute :unrevealed?, :in_unrevealed_collection
+  alias_attribute :chapters_expected, :expected_number_of_chapters
 end
