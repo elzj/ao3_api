@@ -8,6 +8,6 @@
 
 Language.create(short: 'en', name: 'English')
 
-Warning::DEFAULTS.each { |name| Warning.create(name: name, canonical: true) }
+ArchiveWarning::DEFAULTS.each { |name| ArchiveWarning.create(name: name, canonical: true) }
 Rating::DEFAULTS.each { |name| Rating.create(name: name, canonical: true) }
 Category::DEFAULTS.each { |name| Category.create(name: name, canonical: true) }

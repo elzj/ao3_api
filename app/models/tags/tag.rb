@@ -161,7 +161,7 @@ class Tag < ApplicationRecord
   # exists as a different type
   def self.tags_for_names(tag_type, names)
     found = Tag.where(name: names)
-    tags, wrong_type = found.partition { |tag| tag.type == type }
+    tags, wrong_type = found.partition { |tag| tag.type == tag_type }
 
     new_tags = names - tags.map(&:name)
     new_tags += wrong_type.map { |tag| "#{tag.name} - #{tag_type}" }
