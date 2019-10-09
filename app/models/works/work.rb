@@ -72,6 +72,16 @@ class Work < ApplicationRecord
     WorkSearch.document(self)
   end
 
+  def set_completeness
+    posted_chapter_count = chapters.select { |c| c.posted? }.length
+    self.complete = (posted_chapter_count == chapters_expected)
+  end
+
+  def set_word_count
+    posted_word_counts = chapters.map { |c| c.posted? ? c.word_count : 0 }
+    self.word_count = posted_word_counts.sum
+  end
+
   alias_attribute :anonymous?, :in_anon_collection
   alias_attribute :unrevealed?, :in_unrevealed_collection
   alias_attribute :chapters_expected, :expected_number_of_chapters

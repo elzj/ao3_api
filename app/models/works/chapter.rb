@@ -2,6 +2,7 @@
 
 class Chapter < ApplicationRecord
   include Creatable
+  include Positionable
   include Sanitized
 
   sanitize_fields title:    [:html_entities],
@@ -11,7 +12,7 @@ class Chapter < ApplicationRecord
                   content:  [:html, :css, :multimedia]
 
   ### ASSOCIATIONS
-  belongs_to :work  
+  belongs_to :work
 
   ### VALIDATIONS
   validates :content,
@@ -37,19 +38,30 @@ class Chapter < ApplicationRecord
             }
 
   ### CALLBACKS
-  before_validation :clean_title
+  before_validation :clean_title, :count_words
+  after_commit :queue_callbacks
 
   ### CLASS METHODS
-  def self.in_order
-    order(:position)
-  end
-
   def self.posted
     where(posted: true)
+  end
+
+  def self.update_positions(work_id: work_id)
+    return unless work_id
+    reposition!(where(work_id: work_id))
   end
 
   ### INSTANCE METHODS
   def clean_title
     self.title = title.strip if title
+  end
+
+  def count_words
+    self.word_count = Otw::WordCounter.new(content).count
+  end
+
+  # Put callbacks that affect other models here
+  def queue_callbacks
+    ChapterPostingJob.perform_later(self)
   end
 end
