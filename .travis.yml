@@ -5,6 +5,8 @@ rvm:
 services:
   - postgresql
   - redis-server
+node_js:
+  - 12
 before_install:
   - psql -c 'create database travis_ci_test;' -U postgres
 before_script:
