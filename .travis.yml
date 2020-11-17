@@ -5,14 +5,12 @@ rvm:
 services:
   - postgresql
   - redis-server
-node_js:
-  - 12
 before_install:
   - psql -c 'create database travis_ci_test;' -U postgres
 before_script:
   - bash script/travis_elasticsearch_upgrade.sh
   - sleep 10
-  - bin/yarn
+  - bin/yarn install --ignore-engines
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
