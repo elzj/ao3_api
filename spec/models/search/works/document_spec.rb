@@ -144,7 +144,7 @@ RSpec.describe Search::Works::Document, type: :model do
         'freeforms' => [
           { id: freeform.id, name: freeform.name, type: 'Freeform' }.stringify_keys
         ],
-        filter_ids: [fandom.id, meta_tag.id, freeform.id]
+        filter_ids: [fandom.id, freeform.id, meta_tag.id]
       }
       expect(doc.tag_data).to match(tag_data)
     end

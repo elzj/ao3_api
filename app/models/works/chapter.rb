@@ -46,7 +46,7 @@ class Chapter < ApplicationRecord
     where(posted: true)
   end
 
-  def self.update_positions(work_id: work_id)
+  def self.update_positions(work_id)
     return unless work_id
     reposition!(where(work_id: work_id))
   end

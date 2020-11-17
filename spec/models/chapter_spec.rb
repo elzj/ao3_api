@@ -32,7 +32,7 @@ RSpec.describe Chapter, type: :model do
       ch1 = create(:chapter, work_id: work.id, position: 1, updated_at: 2.hours.ago)
       ch2 = create(:chapter, work_id: work.id, position: 2)
       new_ch1 = create(:chapter, work_id: work.id, position: 1)
-      Chapter.update_positions(work_id: work.id)
+      Chapter.update_positions(work.id)
 
       expect(Chapter.in_order).to eq([new_ch1, ch1, ch2])
       expect(ch1.reload.position).to eq(2)

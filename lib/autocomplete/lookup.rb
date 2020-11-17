@@ -107,7 +107,7 @@ module Autocomplete
     end
 
     def cached?
-      redis.exists(cache_set)
+      redis.exists?(cache_set)
     end
 
     def cached_results

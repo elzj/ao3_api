@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 2019_10_02_215239) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "abuse_reports", force: :cascade do |t|
     t.string "email"
     t.string "url", null: false
@@ -83,8 +86,8 @@ ActiveRecord::Schema.define(version: 2019_10_02_215239) do
     t.boolean "account_creation_enabled", default: true, null: false
     t.boolean "invite_from_queue_enabled", default: true, null: false
     t.bigint "invite_from_queue_number"
-    t.integer "invite_from_queue_frequency", limit: 3
-    t.integer "days_to_purge_unactivated", limit: 3
+    t.integer "invite_from_queue_frequency"
+    t.integer "days_to_purge_unactivated"
     t.bigint "last_updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -250,7 +253,7 @@ ActiveRecord::Schema.define(version: 2019_10_02_215239) do
   end
 
   create_table "chapters", force: :cascade do |t|
-    t.text "content", size: :long, null: false
+    t.text "content", null: false
     t.integer "position", default: 1
     t.integer "work_id"
     t.datetime "created_at"
@@ -275,8 +278,8 @@ ActiveRecord::Schema.define(version: 2019_10_02_215239) do
     t.integer "collection_id"
     t.integer "item_id"
     t.string "item_type", default: "Work"
-    t.integer "user_approval_status", limit: 1, default: 0, null: false
-    t.integer "collection_approval_status", limit: 1, default: 0, null: false
+    t.integer "user_approval_status", limit: 2, default: 0, null: false
+    t.integer "collection_approval_status", limit: 2, default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "anonymous", default: false, null: false
@@ -316,9 +319,9 @@ ActiveRecord::Schema.define(version: 2019_10_02_215239) do
 
   create_table "collection_profiles", force: :cascade do |t|
     t.integer "collection_id"
-    t.text "intro", size: :medium
-    t.text "faq", size: :medium
-    t.text "rules", size: :medium
+    t.text "intro"
+    t.text "faq"
+    t.text "rules"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text "gift_notification"
@@ -684,7 +687,7 @@ ActiveRecord::Schema.define(version: 2019_10_02_215239) do
     t.integer "user_id", null: false
     t.integer "admin_id"
     t.integer "role_id"
-    t.integer "action", limit: 1
+    t.integer "action", limit: 2
     t.text "note", null: false
     t.datetime "enddate"
     t.datetime "created_at"
@@ -1346,4 +1349,5 @@ ActiveRecord::Schema.define(version: 2019_10_02_215239) do
     t.integer "position"
     t.integer "content_sanitizer_version", limit: 2, default: 0, null: false
   end
+
 end
