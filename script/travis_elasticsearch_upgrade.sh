@@ -1,6 +1,6 @@
 #!/bin/bash
 ES_VERSION="7.3.2"
-ES_PORT="9400"
+ES_PORT="9200"
 cd /tmp
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz
 tar xvfz /tmp/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz
