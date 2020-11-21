@@ -146,7 +146,11 @@ RSpec.describe Search::Works::Document, type: :model do
         ],
         filter_ids: [fandom.id, freeform.id, meta_tag.id]
       }
-      expect(doc.tag_data).to match(tag_data)
+      expect(doc.tag_data[:tags]).to match(tag_data[:tags])
+      expect(doc.tag_data[:meta_tags]).to match(tag_data[:meta_tags])
+      expect(doc.tag_data['fandoms']).to match(tag_data['fandoms'])
+      expect(doc.tag_data['freeforms']).to match(tag_data['freeforms'])
+      expect(doc.tag_data[:filter_ids].sort).to match(tag_data[:filter_ids].sort)
     end
   end
 end
